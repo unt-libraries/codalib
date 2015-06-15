@@ -61,16 +61,12 @@ def waitForURL(url, max_seconds=None):
 
     startTime = datetime.datetime.now()
     while True:
-        #loop for-evah!
-        #httpCon = httplib2.Http()
         response = None
         info = None
         try:
-            #response,content = httpCon.request(url, "HEAD")
             response = urllib2.urlopen(HEADREQUEST(url))
         except urllib2.URLError, u:
             pass
-        #if response != None and response["status"] == "200":
         if response != None and isinstance(response, urllib2.addinfourl):
             info = response.info()
             if response.getcode() == 200:
