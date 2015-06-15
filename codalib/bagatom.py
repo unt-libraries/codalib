@@ -1,5 +1,5 @@
 import os
-import anvl
+from . import anvl, APP_AUTHOR
 import urllib
 import xml.sax.saxutils as saxutils
 from lxml import etree
@@ -254,7 +254,7 @@ class AttrDict(dict):
 def makeObjectFeed(
         paginator, objectToXMLFunction, feedId, title, webRoot,
         idAttr="id", nameAttr="name", dateAttr=None, request=None, page=1,
-        count=20, author={"name": "UNT", "uri": "http://library.unt.edu/"}):
+        count=20, author=APP_AUTHOR):
     """
     Take a list of some kind of object, a conversion function, an id and a
     title Return XML representing an ATOM feed
