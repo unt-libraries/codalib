@@ -11,8 +11,7 @@ except ImportError:
 from lxml import etree
 import uuid
 import datetime
-from coda import bagatom
-import httplib2
+from . import bagatom
 import urllib2
 import urlparse
 import sys
