@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import datetime
 from lxml import etree
 
 from codalib import bagatom
@@ -73,7 +74,6 @@ def test_queue_has_datetime_harvest_start(queue_stub):
     Check that queueEntryToXML accepts a datetime object in the
     harvest_start property.
     """
-    from datetime import datetime
     queue_stub.harvest_start = datetime(2015, 1, 1, 0, 0, 0)
 
     xml = bagatom.queueEntryToXML(queue_stub)
@@ -91,7 +91,6 @@ def test_queue_has_datetime_harvest_end(queue_stub):
     Check that queueEntryToXML accepts a datetime object in the
     harvest_end property.
     """
-    from datetime import datetime
     queue_stub.harvest_end = datetime(2015, 1, 1, 0, 0, 0)
 
     xml = bagatom.queueEntryToXML(queue_stub)

@@ -10,6 +10,10 @@ from codalib import bagatom
 def test_getOxum(monkeypatch):
     """
     Check the return value of getOxum with patched system calls.
+
+    getOxum should return the total size and the total number
+    of files in the directory in the form of
+    `<total size>.<total files>`
     """
 
     def walk(thin):
@@ -29,9 +33,6 @@ def test_getOxum(monkeypatch):
     monkeypatch.setattr(os, 'walk', walk)
     monkeypatch.setattr(os, 'stat', MockStat)
 
-    # getOxum should return the total size and the total number
-    # of files in the directory in the form of
-    # `<total size>.<total files>`
     assert bagatom.getOxum('') == "1500.3"
 
 
@@ -39,7 +40,10 @@ def test_getOxum(monkeypatch):
 def note_xml():
     return """<note xmlns="http://example.com/namespace">
                   <to>Tove</to>
-                  <from>Jani</from>
+                  <from>
+                    <name>Jani</name>
+                    <email>jani@example.com</email>
+                  </from>
                   <heading>Reminder</heading>
                   <body>Don't forget me this weekend!</body>
               </note>
@@ -60,7 +64,7 @@ def test_getBagTags_returns_dict(monkeypatch):
     """
     Check the return value of getBagTags.
     """
-    # Path the builtin function `open` with the mock_open
+    # Patch the builtin function `open` with the mock_open
     # function.
     m = mock_open(read_data='tag: tag')
     monkeypatch.setattr('__builtin__.open', m)
@@ -117,7 +121,7 @@ def test_getValueByName_returns_None(note_xml):
 
 def test_getNodeByName_returns_node(note_xml):
     """
-    Check that getNodeByName returns a etree._Element and that
+    Check that getNodeByName returns an etree._Element and that
     the returned element matches the root child element.
     """
     root = etree.fromstring(note_xml)
@@ -144,9 +148,9 @@ def test_getNodeByName_raises_exception_without_node_param():
     to the function.
     """
     with pytest.raises(Exception) as e:
-        bagatom.getNodeByName(None, "element")
+        bagatom.getNodeByName(None, 'element')
 
-    assert "Cannot search for a child" in str(e.value)
+    assert 'Cannot search for a child' in str(e.value)
 
 
 def test_getNodeByName_raises_exception_without_name_param():
@@ -155,9 +159,9 @@ def test_getNodeByName_raises_exception_without_name_param():
     passed to the function.
     """
     with pytest.raises(Exception) as e:
-        bagatom.getNodeByName("node", None)
+        bagatom.getNodeByName('node', None)
 
-    assert "Unspecified name to find node for." == str(e.value)
+    assert 'Unspecified name to find node for.' == str(e.value)
 
 
 def test_getNodesByName_returns_list(people_xml):
@@ -183,6 +187,35 @@ def test_getNodesByName_returns_empty_list(people_xml):
     assert len(nodes) == 0
 
 
-@pytest.mark.xfail
-def test_getNodeByNameChain():
-    pass
+def test_getNodeByNameChain_returns_correct_node(note_xml):
+    """
+    Check that getNodeByNameChain returns the correct node.
+    """
+    root = etree.fromstring(note_xml)
+    chain = ['from', 'name']
+    node = bagatom.getNodeByNameChain(root, chain)
+    assert node.text == 'Jani'
+
+
+def test_getNodeByNameChain_raises_exception(note_xml):
+    """
+    Verify that getNodeByNameChain raises an exception if the
+    path specified in the chain does not exist in the XML tree.
+    """
+    root = etree.fromstring(note_xml)
+    # This chain is invalid because the `to` element does not
+    # have any children.
+    chain = ['to', 'cc']
+
+    with pytest.raises(Exception):
+        bagatom.getNodeByNameChain(root, chain)
+
+
+def test_getNodeByNameChain_returns_same_node_with_empty_chain_list(note_xml):
+    """
+    Test that the passed in tree is returned unchanged if the chain_list
+    positional argument is an empty list.
+    """
+    root = etree.fromstring(note_xml)
+    node = bagatom.getNodeByNameChain(root, [])
+    assert node == root

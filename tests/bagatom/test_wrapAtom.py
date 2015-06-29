@@ -17,7 +17,7 @@ def test_return_type():
     Verify the return type of wrapAtom is an instance of etree._Element.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
     assert isinstance(atom, etree._Element)
 
 
@@ -26,7 +26,7 @@ def test_has_date():
     Check the returned tree has an updated element by default.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
 
     updated = atom.xpath(
         '/a:entry/a:updated',
@@ -43,7 +43,7 @@ def test_uses_date():
     updated = datetime(2012, 12, 12)
 
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test", updated=updated)
+    atom = bagatom.wrapAtom(root, '934023', 'test', updated=updated)
 
     elements = atom.xpath(
         '/a:entry/a:updated',
@@ -59,10 +59,10 @@ def test_has_title():
     """
     Check that the title element is present.
     """
-    title = "Test Title"
+    title = 'Test Title'
 
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", title)
+    atom = bagatom.wrapAtom(root, '934023', title)
 
     elements = atom.xpath(
         '/a:entry/a:title',
@@ -76,8 +76,8 @@ def test_has_id():
     """
     Check that the id element is present.
     """
-    title = "Test Title"
-    _id = "2910"
+    title = 'Test Title'
+    _id = '2910'
 
     root = etree.fromstring(xml)
     atom = bagatom.wrapAtom(root, _id, title)
@@ -96,7 +96,7 @@ def test_has_content():
     attribute of `application/xml`.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
 
     content = atom.xpath(
         '/a:entry/a:content',
@@ -114,7 +114,7 @@ def test_has_author_name():
     """
     author_text = 'John Doe'
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test", author=author_text)
+    atom = bagatom.wrapAtom(root, '934023', 'test', author=author_text)
 
     author = atom.xpath(
         '/a:entry/a:author/a:name',
@@ -130,7 +130,7 @@ def test_has_no_author():
     specified.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
 
     author = atom.xpath(
         '/a:entry/a:author',
@@ -145,7 +145,7 @@ def test_has_author_uri():
     """
     author_uri_text = 'http://example.com/author'
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test", author_uri=author_uri_text)
+    atom = bagatom.wrapAtom(root, '934023', 'test', author_uri=author_uri_text)
 
     author_uri = atom.xpath(
         '/a:entry/a:author/a:uri',
@@ -161,7 +161,7 @@ def test_has_no_author_uri():
     author_uri_text kwarg is not set.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
 
     author_uri = atom.xpath(
         '/a:entry/a:author/a:uri',
@@ -178,7 +178,7 @@ def test_has_author_and_author_uri():
     author_text = 'John Doe'
     author_uri_text = 'http://example.com/author'
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test", author=author_text,
+    atom = bagatom.wrapAtom(root, '934023', 'test', author=author_text,
                             author_uri=author_uri_text)
 
     author = atom.xpath(
@@ -193,7 +193,7 @@ def test_content_is_preserved():
     Verify that the content is preserved after it has been wrapped.
     """
     root = etree.fromstring(xml)
-    atom = bagatom.wrapAtom(root, "934023", "test")
+    atom = bagatom.wrapAtom(root, '934023', 'test')
 
     content = atom.xpath(
         '/a:entry/a:content',

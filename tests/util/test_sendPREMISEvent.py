@@ -10,7 +10,7 @@ def test_is_successful(monkeypatch):
     """
     Check that sendPremisEvent returns the response and content.
 
-    Verify the conditions which will cause no exceptions to be
+    Verify the conditions will cause no exceptions to be
     raised or caught.
     """
     response = Mock(code=201)
@@ -28,8 +28,8 @@ def test_is_successful(monkeypatch):
 
 def test_raises_exception_when_doWebRequest_fails(monkeypatch):
     """
-    Check that sendPremisEvent raises and exception when the HTTP
-    request is unable to yeild a response repeatedly.
+    Check that sendPremisEvent raises an exception when the HTTP
+    request is unable to yield a response repeatedly.
     """
     waitForURL = Mock()
 

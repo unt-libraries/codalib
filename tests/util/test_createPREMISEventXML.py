@@ -199,7 +199,7 @@ def test_eventDateTime_element_has_custom_datetime():
 def test_eventDetails_element_text_is_none():
     """
     Verify the eventDetail text is None when the eventDetail
-    postitional arg is None.
+    positional arg is None.
     """
     premis = util.createPREMISEventXML(None, None, None, None)
 
@@ -319,7 +319,7 @@ def test_linkingAgentIdentifierRole_element_text():
 
 def test_linkingAgentIdentifierValue_element_text_is_none():
     """
-    Verify the agentIdentifier positional argument yields an
+    Verify the agentIdentifier positional argument yields a
     linkingAgentIdentifierValue element with no text when the
     argument is None.
     """
@@ -335,7 +335,7 @@ def test_linkingAgentIdentifierValue_element_text_is_none():
 
 def test_linkingAgentIdentifierValue_element_text():
     """
-    Verify the agentIdentifier positional argument yields an
+    Verify the agentIdentifier positional argument yields a
     linkingAgentIdentifierValue element with text from the argument.
     """
     agent = 'John Doe'

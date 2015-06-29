@@ -64,7 +64,7 @@ class Test_readANVLString(object):
         behavior, but it has been marked as an expected failure because
         it is not the desired functionality.
         """
-        anvl_string = "\t# this is comment\n"
+        anvl_string = '\t# this is comment\n'
 
         with pytest.raises(IndexError):
             anvl.readANVLString(anvl_string)

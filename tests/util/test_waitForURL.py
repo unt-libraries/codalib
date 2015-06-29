@@ -1,7 +1,3 @@
-"""
-Tests for the codalib.util.waitForURL.
-"""
-
 import urllib2
 from mock import MagicMock
 from time import sleep
@@ -11,7 +7,7 @@ from codalib.util import waitForURL
 
 def test_url_call_succeeds_with_200(monkeypatch):
     """
-    Test the function will return once it the HTTP Response is
+    Test the function will return once the HTTP Response is
     200 OK.
     """
     # Setup the mocks.

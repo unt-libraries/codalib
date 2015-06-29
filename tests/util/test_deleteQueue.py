@@ -7,8 +7,8 @@ from codalib import util
 
 def test_is_successful(monkeypatch):
     """
-    Check that deleteQueue does not raise an exception and calls
-    doWebRequest and the response.getcode are called once.
+    Check that deleteQueue does not raise an exception and that
+    doWebRequest and response.getcode are called once.
     """
     response = Mock()
     response.getcode.return_value = 200

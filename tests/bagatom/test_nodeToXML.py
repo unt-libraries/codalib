@@ -10,9 +10,9 @@ class NodeStub(object):
     """
     Test stub that implements the Node model interface.
     """
-    node_name = "Test Name"
-    node_url = "http://example.com/node"
-    node_path = "/foo/bar/node"
+    node_name = 'Test Name'
+    node_url = 'http://example.com/node'
+    node_path = '/foo/bar/node'
     node_capacity = 4096
     node_size = 2048
     last_checked = datetime(2015, 01, 01)
@@ -27,7 +27,7 @@ def test_return_type():
     assert isinstance(tree, etree._Element)
 
 
-@pytest.mark.parametrize("element,text", [
+@pytest.mark.parametrize('element,text', [
     ('name', 'Test Name'),
     ('url', 'http://example.com/node'),
     ('path', '/foo/bar/node'),

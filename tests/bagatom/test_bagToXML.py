@@ -30,7 +30,8 @@ def bagxml(monkeypatch):
 
     monkeypatch.setattr(
         'codalib.bagatom.getOxum',
-        lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT))
+        lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT)
+    )
 
     return bagatom.bagToXML(TEST_PATH)
 
@@ -38,25 +39,26 @@ def bagxml(monkeypatch):
 @pytest.fixture
 def bagxml_with_tags(monkeypatch):
     """
-    Test fixture that patches the following functions.
+    Test fixture that patches the following functions:
         open()
         bagatom.getBagTags()
         bagatom.getOxum()
 
-    Returns getBagTags returns a predefined set of tags.
+    Returns a predefined set of tags.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
     monkeypatch.setattr('__builtin__.open', m)
 
     bagtags = {
-        'Source-Organization': "Test Org",
+        'Source-Organization': 'Test Org',
         'Bag-Size': '1GB'
     }
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: bagtags)
 
     monkeypatch.setattr(
         'codalib.bagatom.getOxum',
-        lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT))
+        lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT)
+    )
 
     return bagatom.bagToXML(TEST_PATH)
 
@@ -64,12 +66,12 @@ def bagxml_with_tags(monkeypatch):
 @pytest.fixture
 def bagxml_with_bagging_date(monkeypatch):
     """
-    Test fixture that patches the following functions.
+    Test fixture that patches the following functions:
         open()
         bagatom.getBagTags()
         bagatom.getOxum()
 
-    Returns getBagTags returns a predefined set of tags, including the
+    Returns a predefined set of tags, including the
     Bagging-Date tag.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
@@ -119,7 +121,7 @@ def test_return_tree_has_payloadSize(bagxml):
     assert payloadSize[0].text == str(PAYLOAD_SIZE)
 
 
-def test_return_tree_has_bagitversion(bagxml):
+def test_return_tree_has_bagitVersion(bagxml):
     """
     Verify the return value has a bagitVersion element.
     """
@@ -186,7 +188,7 @@ def test_return_tree_check_item_children(bagxml_with_tags):
     assert 'Test Org' in items
 
 
-def test_return_tree_has_no_bagging_date(bagxml):
+def test_return_tree_has_no_baggingDate(bagxml):
     """
     Verify the return value does not have a baggingDate element.
     """
@@ -197,7 +199,7 @@ def test_return_tree_has_no_bagging_date(bagxml):
     assert len(baggingDate) == 0
 
 
-def test_return_tree_with_bagging_date(bagxml_with_bagging_date):
+def test_return_tree_with_baggingDate(bagxml_with_bagging_date):
     """
     Check that the return tree baggingDate element value is correct.
     """

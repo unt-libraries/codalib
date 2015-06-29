@@ -11,7 +11,7 @@ def test_return_value(monkeypatch):
     """
     # Setup the mocks.
     response = Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     # Patch urlopen so that we do not make an http request.
@@ -38,12 +38,12 @@ def test_with_head_method(monkeypatch):
     Check that the HEADREQUEST is passed to urllib2.urlopen.
     """
     response = Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
-                                     method="HEAD")
+                                     method='HEAD')
 
     assert return_value == (response, response.read())
 
@@ -56,12 +56,12 @@ def test_with_put_method(monkeypatch):
     Check that the PUTREQUEST is passed to urllib2.urlopen.
     """
     response = Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
-                                     method="PUT")
+                                     method='PUT')
 
     assert return_value == (response, response.read())
 
@@ -74,12 +74,12 @@ def test_with_delete_method(monkeypatch):
     Check that the DELETEREQUEST is passed to urllib2.urlopen.
     """
     response = Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
-                                     method="DELETE")
+                                     method='DELETE')
 
     assert return_value == (response, response.read())
 
@@ -89,11 +89,11 @@ def test_with_delete_method(monkeypatch):
 
 def test_with_post_method(monkeypatch):
     """
-    Check that a urllib2.Requst object with the POST method is
+    Check that a urllib2.Request object with the POST method is
     constructed.
     """
     request, response = Mock(), Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     # We will mock the request object so we can make some
@@ -103,7 +103,7 @@ def test_with_post_method(monkeypatch):
 
     url = 'http://example.com/foo/bar'
     data = {'data': 'test'}
-    return_value = util.doWebRequest(url, data=data, method="POST")
+    return_value = util.doWebRequest(url, data=data, method='POST')
 
     assert return_value == (response, response.read())
     request.assert_called_with(url, data=data, headers={})
@@ -111,11 +111,11 @@ def test_with_post_method(monkeypatch):
 
 def test_with_get_method(monkeypatch):
     """
-    Check that a urllib2.Requst object with the GET method is
+    Check that a urllib2.Request object with the GET method is
     constructed.
     """
     request, response = Mock(), Mock()
-    response.read.return_value = "test content"
+    response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
     monkeypatch.setattr('urllib2.Request', request)
@@ -126,4 +126,3 @@ def test_with_get_method(monkeypatch):
 
     assert return_value == (response, response.read())
     request.assert_called_with(url, headers={})
-

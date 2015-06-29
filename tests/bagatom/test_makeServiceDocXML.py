@@ -47,7 +47,7 @@ def test_has_workspace_element():
 def test_has_title_element():
     """
     Check the title element is present in the returned tree and
-    includes the text form the title positional argument.
+    includes the text from the title positional argument.
     """
     xml = bagatom.makeServiceDocXML('Test Title', [])
     title = xml[0].xpath(
@@ -92,7 +92,7 @@ def test_has_collection_elements():
 
 def test_has_no_collection_element():
     """
-    Verify the return tree has no collection elements when no
+    Verify the returned tree has no collection elements when no
     collection dictionaries are passed in.
     """
     xml = bagatom.makeServiceDocXML('Test Title', [])
