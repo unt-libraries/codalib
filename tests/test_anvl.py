@@ -33,7 +33,7 @@ class Test_readANVLString(object):
     def test_string_without_colon(self):
         """
         IndexError is not an appropriate response and
-        will be changed in the future.  This test verifies the functions
+        will be changed in the future.  This test verifies the function's
         behavior, but it has been marked as an expected failure because
         it is not the desired functionality.
         """
@@ -60,7 +60,7 @@ class Test_readANVLString(object):
     def test_with_comment_char_not_in_first_column(self):
         """
         readANVLString should be able to pickup a comment char even
-        if whitespace precedes it.  This test verifies the functions
+        if whitespace precedes it.  This test verifies the function's
         behavior, but it has been marked as an expected failure because
         it is not the desired functionality.
         """
