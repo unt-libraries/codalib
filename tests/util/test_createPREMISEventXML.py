@@ -196,7 +196,7 @@ def test_eventDateTime_element_has_custom_datetime():
     assert eventDateTime[0].text == str(date)
 
 
-def test_eventDetails_element_text_is_none():
+def test_eventDetail_element_text_is_none():
     """
     Verify the eventDetail text is None when the eventDetail
     positional arg is None.
@@ -211,7 +211,7 @@ def test_eventDetails_element_text_is_none():
     assert eventDetail[0].text is None
 
 
-def test_eventDetails_element_text():
+def test_eventDetail_element_text():
     """
     Verify the eventDetail positional argument yields an eventDetail
     element with text from the argument.
@@ -273,20 +273,20 @@ def test_has_no_eventOutcomeDetail_element():
     assert len(eventOutcomeDetail) == 0
 
 
-def test_eventOutcomeDetails_element_text():
+def test_eventOutcomeDetail_element_text():
     """
-    Verify the outcomeDetails kwarg yields an eventOutcomeDetail
+    Verify the outcomeDetail kwarg yields an eventOutcomeDetail
     element with text from the argument.
     """
-    outcomeDetails = 'Fake event outcome details.'
+    outcomeDetail = 'Fake event outcome details.'
     premis = util.createPREMISEventXML(None, None, None, None,
-                                       outcomeDetail=outcomeDetails)
-    eventOutcomeDetails = premis.xpath(
+                                       outcomeDetail=outcomeDetail)
+    eventOutcomeDetail = premis.xpath(
         '/p:event/p:eventOutcomeInformation/p:eventOutcomeDetail',
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
-    assert len(eventOutcomeDetails) == 1
-    assert eventOutcomeDetails[0].text == outcomeDetails
+    assert len(eventOutcomeDetail) == 1
+    assert eventOutcomeDetail[0].text == outcomeDetail
 
 
 def test_linkingAgentIdentifierType_element_text():
@@ -349,7 +349,7 @@ def test_linkingAgentIdentifierValue_element_text():
     assert linkingAgentIdentifierValue[0].text == agent
 
 
-def test_has_no_linkingObjectIdentifier_element(premis_args):
+def test_has_no_linkingObjectIdentifier_element():
     """
     Check that the linkingObjectIdentifier is not present when
     the objectList kwarg uses the default value.
@@ -363,9 +363,9 @@ def test_has_no_linkingObjectIdentifier_element(premis_args):
     assert len(linkingObjectIdentifier) == 0
 
 
-def test_linkingObjectIdentifierType_element_text(premis_args):
+def test_linkingObjectIdentifierType_element_text():
     """
-    Verify the linkObjectList kwarg yeilds a linkingObjectIdentifierType
+    Verify the linkObjectList kwarg yields a linkingObjectIdentifierType
     element with the value being the second element of the identifier
     tuple.
     """
@@ -385,9 +385,9 @@ def test_linkingObjectIdentifierType_element_text(premis_args):
     assert linkingObjectIdentifierType[0].text == identifier[1]
 
 
-def test_linkingObjectIdentifierValue_element_text(premis_args):
+def test_linkingObjectIdentifierValue_element_text():
     """
-    Verify the linkObjectList kwarg yeilds a linkingObjectIdentifierValue
+    Verify the linkObjectList kwarg yields a linkingObjectIdentifierValue
     element with the value being the first element of the identifier
     tuple.
     """
@@ -407,9 +407,9 @@ def test_linkingObjectIdentifierValue_element_text(premis_args):
     assert linkingObjectIdentifierValue[0].text == identifier[0]
 
 
-def test_linkingObjectRole_element_text(premis_args):
+def test_linkingObjectRole_element_text():
     """
-    Verify the linkObjectList kwarg yeilds a linkingObjectRole
+    Verify the linkObjectList kwarg yields a linkingObjectRole
     element with the value being the last element of the identifier
     tuple.
     """
