@@ -16,7 +16,7 @@ def test_return_value(monkeypatch):
             {'name': 'foo', 'label': 'Foo'},
             {'name': 'bar', 'label': 'Bar'},
             {'name': 'baz', 'label': 'Baz'},
-            {'name': 'qux', 'label': 'Qux'},
+            {'name': 'qux', 'label': 'Qux'}
         ]
     })
 
@@ -24,7 +24,7 @@ def test_return_value(monkeypatch):
     choices = util.parseVocabularySources('/foo/bar')
 
     assert len(choices) == 4
-    # Verify that all element of the list are tuples.
+    # Verify that all elements of the list are tuples.
     assert all([type(choice) is tuple for choice in choices])
 
 
@@ -34,7 +34,7 @@ def test_return_value_elements(monkeypatch):
     """
     read_data = json.dumps({
         'terms': [
-            {'name': 'foo', 'label': 'Foo'},
+            {'name': 'foo', 'label': 'Foo'}
         ]
     })
 
@@ -46,7 +46,7 @@ def test_return_value_elements(monkeypatch):
 @pytest.mark.xfail
 def test_empty_file_does_not_raise_exception(monkeypatch):
     """
-    Verify that that an exception will not be raised if the file is empty.
+    Verify that an exception will not be raised if the file is empty.
     """
     monkeypatch.setattr('__builtin__.open', mock_open())
     util.parseVocabularySources('/foo/bar')
@@ -55,7 +55,7 @@ def test_empty_file_does_not_raise_exception(monkeypatch):
 @pytest.mark.xfail
 def test_empty_json_does_not_raise_exception(monkeypatch):
     """
-    Verify that that an exception will not be raised if the file has a json
+    Verify that an exception will not be raised if the file has a json
     object, but the object is empty.
     """
     read_data = json.dumps({})
