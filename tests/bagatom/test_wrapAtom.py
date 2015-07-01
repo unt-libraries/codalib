@@ -1,7 +1,9 @@
-from lxml import etree
 from datetime import datetime
 
+from lxml import etree
+
 from codalib import bagatom
+
 
 xml = """<note>
             <to>Tove</to>

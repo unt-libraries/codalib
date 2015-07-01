@@ -1,8 +1,8 @@
 import os
-import pytest
 
-from mock import mock_open
 from lxml import etree
+from mock import mock_open
+import pytest
 
 from codalib import bagatom
 

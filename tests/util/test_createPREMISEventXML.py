@@ -1,7 +1,7 @@
-import pytest
+from datetime import datetime
 
 from lxml import etree
-from datetime import datetime
+import pytest
 
 from codalib import util
 

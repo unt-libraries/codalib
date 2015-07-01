@@ -1,7 +1,7 @@
 import os
-import pytest
 
 from mock import mock_open
+import pytest
 
 from codalib import bagatom
 

@@ -1,6 +1,7 @@
-import urllib2
-from mock import MagicMock
 from time import sleep
+import urllib2
+
+from mock import MagicMock
 
 from codalib.util import waitForURL
 

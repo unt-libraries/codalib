@@ -1,6 +1,5 @@
-import pytest
-
 from mock import Mock
+import pytest
 
 from codalib import util
 

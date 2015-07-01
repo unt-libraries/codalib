@@ -1,5 +1,6 @@
-from mock import Mock
 from urllib2 import URLError
+
+from mock import Mock
 
 from codalib import util
 

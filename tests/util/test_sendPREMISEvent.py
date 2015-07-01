@@ -1,7 +1,7 @@
-import pytest
+from urllib2 import URLError
 
 from mock import Mock
-from urllib2 import URLError
+import pytest
 
 from codalib import util
 

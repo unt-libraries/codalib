@@ -1,8 +1,8 @@
-import copy
-import pytest
+from copy import deepcopy
 
 from lxml import etree
 from mock import Mock
+import pytest
 
 from codalib import bagatom
 
@@ -45,7 +45,7 @@ def test_object_properties_match_xml(person_xml, mini_mock):
 
     # A mock function for the XMLToObjectFunc parameter. We will make a copy of
     # the object to return to ensure that we do not mutate it in the test.
-    xmlToObject = Mock(return_value=copy.deepcopy(return_object))
+    xmlToObject = Mock(return_value=deepcopy(return_object))
 
     # The mappings for XML -> Object translation. This will tell the function
     # to get the firstName element and assign it to the first_name attribute on
@@ -68,7 +68,7 @@ def test_object_does_not_have_xml_property(person_xml, mini_mock):
     # We will not setup the mock this time to verify that the function
     # will still add those attributes.
     return_object = mini_mock()
-    xmlToObject = Mock(return_value=copy.deepcopy(return_object))
+    xmlToObject = Mock(return_value=deepcopy(return_object))
 
     updateList = {'nickname': ['nickname']}
     updated_object = bagatom.updateObjectFromXML(
@@ -85,7 +85,7 @@ def test_xml_does_not_have_property(person_xml, mini_mock):
     tree = etree.fromstring(person_xml)
 
     return_object = mini_mock()
-    xmlToObject = Mock(return_value=copy.deepcopy(return_object))
+    xmlToObject = Mock(return_value=deepcopy(return_object))
 
     # The phone element does not exist in the XML that is being passed into
     # updateObjectFromXML.
@@ -105,7 +105,7 @@ def test_object_returns_unmodified(person_xml, mini_mock):
     tree = etree.fromstring(person_xml)
 
     return_object = mini_mock()
-    xmlToObject = Mock(return_value=copy.deepcopy(return_object))
+    xmlToObject = Mock(return_value=deepcopy(return_object))
 
     updateList = {}
     updated_object = bagatom.updateObjectFromXML(
