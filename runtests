@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+CMD=$@
+
+# If no argument is supplied to the script, we will set py.test
+# as the command to run.
+if [ -z "$CMD" ]; then
+    CMD=py.test
+fi
+
+docker run \
+    --rm \
+    -v `pwd`:/app/. \
+    -it \
+    unt-libraries/codalib \
+    $CMD
