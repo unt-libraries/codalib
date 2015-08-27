@@ -14,7 +14,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as fd:
     readme = fd.read()
 
 install_requires = [
-    'lxml',
+    'lxml>=3.3',
 ]
 
 setup(
