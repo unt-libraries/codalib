@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 
-import os
 import re
 from setuptools import setup, find_packages
 
@@ -8,10 +7,6 @@ version = ''
 with open('codalib/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
-
-readme = ''
-with open(os.path.join(os.path.dirname(__file__), 'README.md')) as fd:
-    readme = fd.read()
 
 install_requires = [
     'lxml>=3.3',
@@ -24,7 +19,8 @@ setup(
     include_package_data=True,
     license='BSD',
     description='A helper library for Coda.',
-    long_description=readme,
+    long_description=('Visit https://github.com/unt-libraries/codalib '
+                      'for the latest documentation.'),
     keywords='library anvl coda',
     author='University of North Texas Libraries',
     author_email='mark.phillips@unt.edu',
