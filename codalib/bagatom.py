@@ -25,7 +25,7 @@ NODE = "{%s}" % NODE_NAMESPACE
 NODE_NSMAP = {"node": NODE_NAMESPACE}
 
 
-def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None):
+def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None, alt=None):
     """
     Create an Atom entry tag and embed the passed XML within it
     """
@@ -36,6 +36,14 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None):
     idTag = etree.SubElement(entryTag, ATOM + "id")
     idTag.text = id
     updatedTag = etree.SubElement(entryTag, ATOM + "updated")
+
+    if alt:
+        etree.SubElement(
+            entryTag,
+            ATOM + "link",
+            rel='alternate',
+            href=alt)
+
     if updated != None:
         updatedTag.text = updated.strftime(TIME_FORMAT_STRING)
     else:
