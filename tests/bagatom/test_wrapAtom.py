@@ -206,7 +206,7 @@ def test_content_is_preserved():
 
 def test_has_alternate_relationship_link():
     """
-    Verify that the content is preserved after it has been wrapped.
+    Verify the entry has an alternate link.
     """
     root = etree.fromstring(xml)
     atom = bagatom.wrapAtom(root, '934023', 'test', alt='http://example.com')
@@ -216,4 +216,3 @@ def test_has_alternate_relationship_link():
         namespaces={'a': bagatom.ATOM_NAMESPACE})
 
     assert link[0].get('href') == 'http://example.com'
-    print etree.tostring(atom, pretty_print=True)
