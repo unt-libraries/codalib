@@ -202,3 +202,17 @@ def test_content_is_preserved():
         namespaces={'a': bagatom.ATOM_NAMESPACE}
     )
     assert xml.strip() in etree.tostring(content[0])
+
+
+def test_has_alternate_relationship_link():
+    """
+    Verify the entry has an alternate link.
+    """
+    root = etree.fromstring(xml)
+    atom = bagatom.wrapAtom(root, '934023', 'test', alt='http://example.com')
+
+    link = atom.xpath(
+        "/a:entry/a:link[@rel='alternate']",
+        namespaces={'a': bagatom.ATOM_NAMESPACE})
+
+    assert link[0].get('href') == 'http://example.com'
