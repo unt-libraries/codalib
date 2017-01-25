@@ -42,7 +42,8 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None, alt=Non
             entryTag,
             ATOM + "link",
             rel='alternate',
-            href=alt)
+            href=alt,
+            type="text/html")
 
     if updated != None:
         updatedTag.text = updated.strftime(TIME_FORMAT_STRING)

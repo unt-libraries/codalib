@@ -49,6 +49,6 @@ def test_simpleFeed():
         '/a:feed//a:entry/a:link[@rel="alternate"]',
         namespaces={'a': atom_ns}
     )
-    print etree.tostring(feed.getroottree(), pretty_print=True)
     assert len(elements) == 1
+    assert elements[0].attrib["type"] == "text/html"
     
