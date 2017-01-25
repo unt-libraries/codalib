@@ -281,7 +281,10 @@ def makeObjectFeed(
     if len(idParts) == 2:
         feedId = idParts[0]
         GETString = idParts[1]
-    GETStruct = request.GET
+    if request:
+        GETStruct = request.GET
+    else:
+        GETStruct = False
     feedTag = etree.Element(ATOM + "feed", nsmap=ATOM_NSMAP)
     # the id tag is very similar to the 'self' link
     idTag = etree.SubElement(feedTag, ATOM + "id")
@@ -302,7 +305,7 @@ def makeObjectFeed(
     # we will always show the link to the current 'self' page
     linkTag = etree.SubElement(feedTag, ATOM + "link")
     linkTag.set("rel", "self")
-    if not request.META['QUERY_STRING']:
+    if not request or not request.META['QUERY_STRING']:
         linkTag.set("href", "%s/%s" % (webRoot, feedId))
     else:
         linkTag.set(
@@ -313,7 +316,10 @@ def makeObjectFeed(
     # we always have a last page
     endLink = etree.SubElement(feedTag, ATOM + "link")
     endLink.set("rel", "last")
-    endLinkGS = GETStruct.copy()
+    if GETStruct:
+        endLinkGS = GETStruct.copy()
+    else:
+        endLinkGS = {}
     endLinkGS.update({"page": paginator.num_pages})
     endLink.set(
         "href", "%s/%s?%s" % (
@@ -323,7 +329,10 @@ def makeObjectFeed(
     # we always have a first page
     startLink = etree.SubElement(feedTag, ATOM + "link")
     startLink.set("rel", "first")
-    startLinkGS = GETStruct.copy()
+    if GETStruct:
+        startLinkGS = GETStruct.copy()
+    else:
+        startLinkGS = {}
     startLinkGS.update({"page": paginator.page_range[0]})
     startLink.set(
         "href", "%s/%s?%s" % (
@@ -334,7 +343,10 @@ def makeObjectFeed(
     if paginator.page(page).has_previous():
         prevLink = etree.SubElement(feedTag, ATOM + "link")
         prevLink.set("rel", "previous")
-        prevLinkGS = GETStruct.copy()
+        if GETStruct:
+            prevLinkGS = GETStruct.copy()
+        else:
+            prevLinkGS = {}
         prevLinkGS.update(
             {"page": paginator.page(page).previous_page_number()}
         )
@@ -346,7 +358,10 @@ def makeObjectFeed(
     if paginator.page(page).has_next():
         nextLink = etree.SubElement(feedTag, ATOM + "link")
         nextLink.set("rel", "next")
-        nextLinkGS = GETStruct.copy()
+        if GETStruct:
+            nextLinkGS = GETStruct.copy()
+        else:
+            nextLinkGS = {}
         nextLinkGS.update({"page": paginator.page(page).next_page_number()})
         nextLinkText = "%s/%s?%s" % (
             webRoot, feedId, urllib.urlencode(nextLinkGS, doseq=True)
@@ -362,7 +377,7 @@ def makeObjectFeed(
             xml=objectXML,
             id='%s/%s%s/' % (webRoot, originalId, getattr(o, idAttr)),
             title=getattr(o, nameAttr),
-            updated=dateStamp,  alt=webRoot+"/bag/"+gettattr(o, idAttr),
+            updated=dateStamp,  alt=webRoot+"/bag/"+getattr(o, idAttr),
         )
         feedTag.append(objectEntry)
     return feedTag
