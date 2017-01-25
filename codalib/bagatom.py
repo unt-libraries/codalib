@@ -362,7 +362,7 @@ def makeObjectFeed(
             xml=objectXML,
             id='%s/%s%s/' % (webRoot, originalId, getattr(o, idAttr)),
             title=getattr(o, nameAttr),
-            updated=dateStamp,
+            updated=dateStamp,  alt=webRoot+"/bag/"+gettattr(o, idAttr),
         )
         feedTag.append(objectEntry)
     return feedTag
