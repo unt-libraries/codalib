@@ -25,7 +25,8 @@ NODE = "{%s}" % NODE_NAMESPACE
 NODE_NSMAP = {"node": NODE_NAMESPACE}
 
 
-def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None, alt=None):
+def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
+        alt=None, alt_type="text/html"):
     """
     Create an Atom entry tag and embed the passed XML within it
     """
@@ -43,7 +44,7 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None, alt=Non
             ATOM + "link",
             rel='alternate',
             href=alt,
-            type="text/html")
+            type=alt_type)
 
     if updated != None:
         updatedTag.text = updated.strftime(TIME_FORMAT_STRING)
