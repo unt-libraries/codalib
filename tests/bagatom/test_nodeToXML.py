@@ -33,7 +33,7 @@ def test_return_type():
     ('path', '/foo/bar/node'),
     ('capacity', '4096'),
     ('size', '2048'),
-    ('lastChecked', '2015-01-01 00:00:00'),
+    ('lastChecked', '2015-01-01T00:00:00Z'),
 ])
 def test_has_element(element, text):
     """

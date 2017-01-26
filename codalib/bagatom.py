@@ -212,7 +212,7 @@ def nodeToXML(nodeObject):
     sizeNode.text = str(nodeObject.node_size)
     if nodeObject.last_checked:
         checkedNode = etree.SubElement(xmlRoot, NODE + "lastChecked")
-        checkedNode.text = str(nodeObject.last_checked)
+        checkedNode.text = nodeObject.last_checked.strftime(TIME_FORMAT_STRING)
     return xmlRoot
 
 
