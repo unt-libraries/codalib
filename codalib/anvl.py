@@ -14,7 +14,6 @@ def readANVLString(string):
     index = 0
     while index < lineCount:
         line = ANVLLines[index]
-        #print "line is %s" % line
         if not len(line) or not len(line.strip()):
             index = index + 1
             continue
@@ -23,7 +22,6 @@ def readANVLString(string):
             continue
         parts = line.split(":", 1)
         key = parts[0].strip()
-        #print "key is %s" % key
         contentBuffer = parts[1].lstrip()
         nextIndex = index + 1
         while nextIndex < lineCount:
@@ -40,7 +38,6 @@ def readANVLString(string):
             nextIndex = nextIndex + 1
         index = nextIndex
         ANVLDict[key] = contentBuffer
-        #index = index + 1
     return ANVLDict
 
 
@@ -53,7 +50,7 @@ def breakString(string, width=79, firstLineOffset=0):
     while index > 0:
         if ' ' == string[index]:
             if not string[index + 1].isspace() and not \
-                string[index - 1].isspace():
+                    string[index - 1].isspace():
                 stringPart1 = string[0:index]
                 stringPart2 = string[index:]
                 return "%s\n%s" % (

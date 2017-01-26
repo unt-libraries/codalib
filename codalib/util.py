@@ -20,7 +20,7 @@ import os
 import time
 import subprocess
 
-#not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
+# not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
 PREMIS_NAMESPACE = "http://www.loc.gov/standards/premis/v1"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
@@ -62,15 +62,13 @@ def waitForURL(url, max_seconds=None):
     startTime = datetime.datetime.now()
     while True:
         response = None
-        info = None
         try:
             response = urllib2.urlopen(HEADREQUEST(url))
-        except urllib2.URLError, u:
+        except urllib2.URLError:
             pass
-        if response != None and isinstance(response, urllib2.addinfourl):
-            info = response.info()
+        if response is not None and isinstance(response, urllib2.addinfourl):
             if response.getcode() == 200:
-                #we're done, yay!
+                # we're done, yay!
                 return
         timeNow = datetime.datetime.now()
         timePassed = timeNow - startTime
@@ -86,11 +84,11 @@ def doWaitWebRequest(url, method="GET", data=None, headers={}):
     """
 
     completed = False
-    while completed == False:
+    while not completed:
         completed = True
         try:
             response, content = doWebRequest(url, method, data, headers)
-        except urllib2.URLError, u:
+        except urllib2.URLError:
             completed = False
             waitForURL(url)
     return response, content
@@ -103,7 +101,6 @@ def doWebRequest(url, method="GET", data=None, headers={}):
 
     # initialize variables
     response = None
-    info = None
     content = None
     # find condition that matches request
     if method == "HEAD":
@@ -120,7 +117,6 @@ def doWebRequest(url, method="GET", data=None, headers={}):
     response = urllib2.urlopen(request)
     if response:
         content = response.read()
-        info = response.info()
     return response, content
 
 
@@ -152,7 +148,7 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
     response = None
     try:
         response, content = doWebRequest(webRoot, "POST", data=atomXMLText)
-    except urllib2.URLError, u:
+    except urllib2.URLError:
         pass
     if not response:
         waitForURL(webRoot, 60)
@@ -203,7 +199,7 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
     else:
         eventIDValueXML.text = uuid.uuid4().hex
     eventDateTimeXML = etree.SubElement(eventXML, PREMIS + "eventDateTime")
-    if eventDate == None:
+    if eventDate is None:
         eventDateTimeXML.text = datetime.datetime.now().strftime(dateFormat)
     else:
         eventDateTimeXML.text = eventDate.strftime(dateFormat)
@@ -221,7 +217,7 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
             eventOutcomeInfoXML, PREMIS + "eventOutcomeDetail"
         )
         eventOutcomeDetailXML.text = outcomeDetail
-        #assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
+        # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
     for linkObject in linkObjectList:
         linkObjectIDXML = etree.SubElement(
             eventXML, PREMIS + "linkingObjectIdentifier"
@@ -255,7 +251,7 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
         linkAgentIDXML, PREMIS + "linkingAgentIdentifierRole"
     )
     linkAgentIDRoleXML.text = \
-    "http://purl.org/net/untl/vocabularies/linkingAgentRoles/#executingProgram"
+        "http://purl.org/net/untl/vocabularies/linkingAgentRoles/#executingProgram"
     return eventXML
 
 
@@ -279,7 +275,7 @@ def deleteQueue(destinationRoot, queueArk, debug=False):
     response, content = doWaitWebRequest(url, "DELETE")
     if response.getcode() != 200:
         raise Exception(
-            "Error updating queue %s to url %s.  Response code is %s\n%s" % \
+            "Error updating queue %s to url %s.  Response code is %s\n%s" %
             (queueArk, url, response.getcode(), content)
         )
 
@@ -309,6 +305,6 @@ def updateQueue(destinationRoot, queueDict, debug=False):
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
     if response.getcode() != 200:
         raise Exception(
-            "Error updating queue %s to url %s.  Response code is %s\n%s" % \
+            "Error updating queue %s to url %s.  Response code is %s\n%s" %
             (attrDict.ark, url, response.getcode(), content)
         )

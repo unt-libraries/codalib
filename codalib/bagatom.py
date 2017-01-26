@@ -1,13 +1,8 @@
 import os
 from . import anvl, APP_AUTHOR
 import urllib
-import xml.sax.saxutils as saxutils
 from lxml import etree
 from datetime import datetime
-try:
-    from urlparse import parse_qs
-except ImportError:
-    from cgi import parse_qs
 
 TIME_FORMAT_STRING = "%Y-%m-%dT%H:%M:%SZ"
 DATE_FORMAT_STRING = "%Y-%m-%d"
@@ -26,7 +21,7 @@ NODE_NSMAP = {"node": NODE_NAMESPACE}
 
 
 def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
-        alt=None, alt_type="text/html"):
+             alt=None, alt_type="text/html"):
     """
     Create an Atom entry tag and embed the passed XML within it
     """
@@ -46,7 +41,7 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
             href=alt,
             type=alt_type)
 
-    if updated != None:
+    if updated is not None:
         updatedTag.text = updated.strftime(TIME_FORMAT_STRING)
     else:
         updatedTag.text = datetime.utcnow().strftime(TIME_FORMAT_STRING)
@@ -99,7 +94,7 @@ def bagToXML(bagPath):
     """
     bagInfoPath = os.path.join(bagPath, "bag-info.txt")
     bagTags = getBagTags(bagInfoPath)
-    if not 'Payload-Oxum' in bagTags:
+    if 'Payload-Oxum' not in bagTags:
         bagTags['Payload-Oxum'] = getOxum(os.path.join(bagPath, "data"))
     oxumParts = bagTags['Payload-Oxum'].split(".", 1)
     bagName = "ark:/67531/" + os.path.split(bagPath)[1]
@@ -118,8 +113,8 @@ def bagToXML(bagPath):
     payLoadSize.text = bagSize
     bagitVersion = etree.SubElement(bagXML, BAG + "bagitVersion")
     bagitVersion.text = bagVersion
-    lastVerified = etree.SubElement(bagXML, BAG + "lastVerified")
-    lastStatus = etree.SubElement(bagXML, BAG + "lastStatus")
+    etree.SubElement(bagXML, BAG + "lastStatus")
+    etree.SubElement(bagXML, BAG + "lastVerified")
     if 'Bagging-Date' in bagTags:
         baggingDate = etree.SubElement(bagXML, BAG + "baggingDate")
         baggingDate.text = bagTags['Bagging-Date']
@@ -151,7 +146,7 @@ def getNodeByName(node, name):
     Get the first child node matching a given local name
     """
 
-    if node == None:
+    if node is None:
         raise Exception(
             "Cannot search for a child '%s' in a None object" % (name,)
         )
@@ -188,7 +183,7 @@ def getNodeByNameChain(node, chain_list):
     while len(working_list):
         current_name = working_list.pop()
         child_node = getNodeByName(current_node, current_name)
-        if child_node == None:
+        if child_node is None:
             raise Exception("Unable to find child node %s" % current_name)
         current_node = child_node
     return current_node
@@ -233,7 +228,7 @@ def queueEntryToXML(queueEntry):
     statusTag.text = queueEntry.status
     if hasattr(queueEntry, "harvest_start") and queueEntry.harvest_start:
         startTag = etree.SubElement(xmlRoot, QXML + "start")
-        if type(queueEntry.harvest_start) == type(""):
+        if isinstance(queueEntry.harvest_start, basestring):
             startTag.text = queueEntry.harvest_start
         else:
             startTag.text = queueEntry.harvest_start.strftime(
@@ -241,7 +236,7 @@ def queueEntryToXML(queueEntry):
             )
     if hasattr(queueEntry, "harvest_end") and queueEntry.harvest_end:
         endTag = etree.SubElement(xmlRoot, QXML + "end")
-        if type(queueEntry.harvest_end) == type(""):
+        if isinstance(queueEntry.harvest_end, basestring):
             endTag.text = queueEntry.harvest_end
         else:
             endTag.text = queueEntry.harvest_end.strftime(TIME_FORMAT_STRING)
@@ -276,13 +271,10 @@ def makeObjectFeed(
     else:
         object_list = []
     count = int(count)
-    endStart = ((listSize / count) * count) + 1
     originalId = feedId
     idParts = feedId.split("?", 1)
-    GETString = ""
     if len(idParts) == 2:
         feedId = idParts[0]
-        GETString = idParts[1]
     if request:
         GETStruct = request.GET
     else:
@@ -411,8 +403,8 @@ def makeServiceDocXML(title, collections):
     return serviceTag
 
 
-def addObjectFromXML(
-    xmlObject, XMLToObjectFunc, topLevelName, idKey, updateList):
+def addObjectFromXML(xmlObject, XMLToObjectFunc,
+                     topLevelName, idKey, updateList):
     """
     Handle adding or updating the Queue.  Based on XML input.
     """
@@ -435,8 +427,8 @@ def addObjectFromXML(
     return newObject
 
 
-def updateObjectFromXML(
-    xmlObject, XMLToObjectFunc, topLevelName, idKey, updateList):
+def updateObjectFromXML(xmlObject, XMLToObjectFunc, topLevelName,
+                        idKey, updateList):
     """
     Handle updating an object.  Based on XML input.
     """
