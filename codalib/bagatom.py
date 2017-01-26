@@ -230,16 +230,16 @@ def queueEntryToXML(queueEntry):
     urlListLinkTag.text = queueEntry.url_list
     statusTag = etree.SubElement(xmlRoot, QXML + "status")
     statusTag.text = queueEntry.status
-    startTag = etree.SubElement(xmlRoot, QXML + "start")
     if hasattr(queueEntry, "harvest_start") and queueEntry.harvest_start:
+        startTag = etree.SubElement(xmlRoot, QXML + "start")
         if type(queueEntry.harvest_start) == type(""):
             startTag.text = queueEntry.harvest_start
         else:
             startTag.text = queueEntry.harvest_start.strftime(
                 TIME_FORMAT_STRING
             )
-    endTag = etree.SubElement(xmlRoot, QXML + "end")
     if hasattr(queueEntry, "harvest_end") and queueEntry.harvest_end:
+        endTag = etree.SubElement(xmlRoot, QXML + "end")
         if type(queueEntry.harvest_end) == type(""):
             endTag.text = queueEntry.harvest_end
         else:

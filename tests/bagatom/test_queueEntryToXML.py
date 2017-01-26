@@ -101,3 +101,24 @@ def test_queue_has_datetime_harvest_end(queue_stub):
     assert len(end) == 1
     assert end[0].text == queue_stub.harvest_end.strftime(
         bagatom.TIME_FORMAT_STRING)
+
+def test_queue_empty_start_end(queue_stub):
+    """
+    Check that empty start/end values are omitted in QueueXML
+    """
+
+    queue_stub.harvest_start = None
+    queue_stub.harvest_end = None
+
+    xml = bagatom.queueEntryToXML(queue_stub)
+    end = xml.xpath(
+        '/q:queueEntry/q:end',
+        namespaces={'q': bagatom.QXML_NAMESPACE}
+    )
+    start = xml.xpath(
+        '/q:queueEntry/q:start',
+        namespaces={'q': bagatom.QXML_NAMESPACE}
+    )
+    assert len(end) == 0
+    assert len(start) == 0
+
