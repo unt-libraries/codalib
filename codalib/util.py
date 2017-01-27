@@ -10,7 +10,7 @@ except ImportError:
     import simplejson as json
 from lxml import etree
 import uuid
-import datetime
+from datetime import datetime, tzinfo, timedelta
 from . import bagatom
 import urllib2
 import urlparse
@@ -24,8 +24,96 @@ import subprocess
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
-dateFormat = "%Y-%m-%dT%H:%M:%S%z"
 svn_version_path = "/usr/bin/svnversion"
+
+# constants for time parsing/formatting
+XSDT_FMT = "%Y-%m-%dT%H:%M:%S" # this is a stub
+XSDT_TZ_OFFSET = 19 # this should never change
+
+class InvalidXSDateTime(Exception):
+    pass
+
+
+class XSDateTimezone(tzinfo):
+    """ 
+    Concrete subclass of tzinfo for making sense of timezone offsets.
+    Not really worried about localization here, just +/-HHMM
+    """
+
+    def __init__(self, hours=0, minutes=0, sign=1):
+        self.minutes = hours*60+minutes
+        self.minutes *= sign
+
+    def utcoffset(self, dt):
+        return timedelta(minutes=self.minutes)
+
+    def dst(self, dt):
+        return timedelta(0)
+
+def xsDateTime_parse(xdt_str):
+    """
+    Parses xsDateTime strings of form 2017-01-27T14:58:00+0600, etc.
+    Returns datetime with tzinfo, if offset included.
+    """
+
+
+    try:
+        # this won't parse the offset (or other tzinfo)
+        naive_dt = datetime.strptime(xdt_str[0:XSDT_TZ_OFFSET], XSDT_FMT)
+    except:
+        raise InvalidXSDateTime("Malformed date/time ('%s')." % (xdt_str, ))
+    naive_len = XSDT_TZ_OFFSET
+    offset_len = len(xdt_str) - naive_len
+    offset_str = xdt_str[-offset_len:]
+    offset_hourse = None
+    offset_minutes = None
+    offset_sign = 1
+    parsed = None
+    if not offset_len:
+        parsed = naive_dt
+    elif offset_len is 6: # +0000
+        if offset_str[0] not in "+-":
+            raise InvalidXSDateTime("Malformed offset (missing sign).")
+        elif offset_str[0] is '-':
+            offset_sign = -1
+        try:
+            offset_hours = int(offset_str[1:3])
+        except:
+            raise InvalidXSDateTime("Malformed offset (invalid hours '%s')"
+                % (offset_str[1:3], )
+            )
+        if offset_str[3] is not ':':
+            raise InvalidXSDateTime("Colon missing in offset.")
+        try:
+            offset_minutes = int(offset_str[4:6])
+        except:
+            raise InvalidXSDateTime("Malformed offset (invalid minutes '%s')"
+                % (offset_str[4:6], )
+            )
+        offset = offset_hours*60.0+offset_minutes
+        offset *= offset_sign
+        timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
+        parsed = naive_dt.replace(tzinfo=timezone)
+    elif offset_len is 1: # Z
+        if offset_str is 'Z':
+            parsed = naive_dt.replace(tzinfo=XSDateTimezone())
+        else:
+            raise InvaildXSDateTime("Unrecognized timezone identifier '%s'." %
+                (offset_str, )
+            )
+    else:
+        raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str, ))
+    return parsed
+
+def xsDateTime_format(xdt):
+    xdt_str = xdt.strftime(XSDT_FMT)
+    offset = xdt.utcoffset()
+    if offset is None:
+        return xdt_str
+    offset_hours = offset.days*24+offset.seconds/(60*60)
+    offset_minutes = (offset.seconds % (60*60))/60
+    xdt_str += "{:+03d}:{:02d}".format(offset_hours, offset_minutes)
+    return xdt_str
 
 
 def parseVocabularySources(jsonFilePath):
@@ -59,7 +147,7 @@ def waitForURL(url, max_seconds=None):
     If it doesn't work, wait a while and try again
     """
 
-    startTime = datetime.datetime.now()
+    startTime = datetime.now()
     while True:
         response = None
         try:
@@ -70,7 +158,7 @@ def waitForURL(url, max_seconds=None):
             if response.getcode() == 200:
                 # we're done, yay!
                 return
-        timeNow = datetime.datetime.now()
+        timeNow = datetime.now()
         timePassed = timeNow - startTime
         if max_seconds and max_seconds < timePassed.seconds:
             return
@@ -200,9 +288,9 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
         eventIDValueXML.text = uuid.uuid4().hex
     eventDateTimeXML = etree.SubElement(eventXML, PREMIS + "eventDateTime")
     if eventDate is None:
-        eventDateTimeXML.text = datetime.datetime.now().strftime(dateFormat)
+        eventDateTimeXML.text = xsDateTime_format(datetime.utcnow())
     else:
-        eventDateTimeXML.text = eventDate.strftime(dateFormat)
+        eventDateTimeXML.text = xsDateTime_format(eventDate)
     eventDetailXML = etree.SubElement(eventXML, PREMIS + "eventDetail")
     eventDetailXML.text = eventDetail
     eventOutcomeInfoXML = etree.SubElement(
