@@ -29,7 +29,6 @@ class Test_readANVLString(object):
         expected = {'key': 'value '}
         assert actual == expected
 
-    @pytest.mark.xfail
     def test_string_without_colon(self):
         """
         IndexError is not an appropriate response and
@@ -37,7 +36,7 @@ class Test_readANVLString(object):
         behavior, but it has been marked as an expected failure because
         it is not the desired functionality.
         """
-        with pytest.raises(IndexError):
+        with pytest.raises(anvl.InvalidANVLRecord):
             anvl.readANVLString('foo bar baz qux')
 
     def test_with_comment(self):
