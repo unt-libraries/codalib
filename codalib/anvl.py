@@ -2,6 +2,8 @@
 Simple bit of code to implement reading and writing ANVL files
 """
 
+class InvalidANVLRecord(Exception):
+    pass
 
 def readANVLString(string):
     """
@@ -20,6 +22,10 @@ def readANVLString(string):
         if "#" == line[0]:
             index = index + 1
             continue
+        if ":" not in line:
+            raise InvalidANVLRecord(
+                "Missing colon in line %d of ANVL record." % (index+1,)
+            )
         parts = line.split(":", 1)
         key = parts[0].strip()
         contentBuffer = parts[1].lstrip()
