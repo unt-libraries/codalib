@@ -2,8 +2,10 @@
 Simple bit of code to implement reading and writing ANVL files
 """
 
+
 class InvalidANVLRecord(Exception):
     pass
+
 
 def readANVLString(string):
     """

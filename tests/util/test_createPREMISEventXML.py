@@ -4,6 +4,25 @@ from lxml import etree
 import pytest
 
 from codalib import util
+import os
+
+
+SCHEMA_DIR = os.path.join(os.path.dirname(os.path.dirname(
+    os.path.realpath(__file__))), 'schema'
+)
+
+
+@pytest.fixture()
+def premis_schema():
+    """Provides an lxml schema object for the Premis v2 XSD suitable
+    for validation.
+    """
+
+    schema_file = open(os.path.join(SCHEMA_DIR, "premis-v2-3.xsd"))
+    schema_doc = etree.parse(schema_file)
+    schema = etree.XMLSchema(schema_doc)
+
+    return schema
 
 
 @pytest.fixture()
@@ -18,6 +37,14 @@ def premis_args():
         linkObjectList=['abc', 'bcd'],
         eventDate=datetime(2015, 01, 01)
     )
+
+
+def test_validate_eventxml(premis_args, premis_schema):
+    """
+    Check produced PREMIS Event xml against schema
+    """
+    premis = util.createPREMISEventXML(**premis_args)
+    premis_schema.assert_(premis)
 
 
 def test_return_value(premis_args):
@@ -193,7 +220,7 @@ def test_eventDateTime_element_has_custom_datetime():
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
     assert len(eventDateTime) == 1
-    assert eventDateTime[0].text == str(date)
+    assert eventDateTime[0].text == date.strftime(util.dateFormat)
 
 
 def test_eventDetail_element_text_is_none():
@@ -281,12 +308,13 @@ def test_eventOutcomeDetail_element_text():
     outcomeDetail = 'Fake event outcome details.'
     premis = util.createPREMISEventXML(None, None, None, None,
                                        outcomeDetail=outcomeDetail)
-    eventOutcomeDetail = premis.xpath(
-        '/p:event/p:eventOutcomeInformation/p:eventOutcomeDetail',
+    eventOutcomeDetailNote = premis.xpath(
+        '/p:event/p:eventOutcomeInformation/p:eventOutcomeDetail/' + 
+        'p:eventOutcomeDetailNote',
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
-    assert len(eventOutcomeDetail) == 1
-    assert eventOutcomeDetail[0].text == outcomeDetail
+    assert len(eventOutcomeDetailNote) == 1
+    assert eventOutcomeDetailNote[0].text == outcomeDetail
 
 
 def test_linkingAgentIdentifierType_element_text():
@@ -310,7 +338,7 @@ def test_linkingAgentIdentifierRole_element_text():
     premis = util.createPREMISEventXML(None, None, None, None)
 
     linkingAgentIdentifierRole = premis.xpath(
-        '/p:event/p:linkingAgentIdentifier/p:linkingAgentIdentifierRole',
+        '/p:event/p:linkingAgentIdentifier/p:linkingAgentRole',
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
     assert len(linkingAgentIdentifierRole) == 1
