@@ -4,6 +4,7 @@ from lxml import etree
 import pytest
 
 from codalib import util
+from codalib.util import xsDateTime_format
 import os
 
 
@@ -212,15 +213,14 @@ def test_eventDateTime_element_has_custom_datetime():
     Verify the eventDate kwarg yields an eventDateTime element with
     the text from the argument.
     """
-    date = datetime(2015, 01, 01)
-    premis = util.createPREMISEventXML(None, None, None, None,
-                                       eventDate=date)
+    dt = datetime(2015, 01, 01)
+    premis = util.createPREMISEventXML(None, None, None, None, eventDate=dt)
     eventDateTime = premis.xpath(
         '/p:event/p:eventDateTime',
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
     assert len(eventDateTime) == 1
-    assert eventDateTime[0].text == date.strftime(util.dateFormat)
+    assert eventDateTime[0].text == xsDateTime_format(dt)
 
 
 def test_eventDetail_element_text_is_none():
