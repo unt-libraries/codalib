@@ -21,10 +21,10 @@ import time
 import subprocess
 
 # not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
-PREMIS_NAMESPACE = "http://www.loc.gov/standards/premis/v1"
+PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
-dateFormat = "%Y-%m-%d %H:%M:%S"
+dateFormat = "%Y-%m-%dT%H:%M:%S%z"
 svn_version_path = "/usr/bin/svnversion"
 
 
@@ -183,9 +183,9 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
     """
 
     eventXML = etree.Element(PREMIS + "event", nsmap=PREMIS_NSMAP)
+    eventIDXML = etree.SubElement(eventXML, PREMIS + "eventIdentifier")
     eventTypeXML = etree.SubElement(eventXML, PREMIS + "eventType")
     eventTypeXML.text = eventType
-    eventIDXML = etree.SubElement(eventXML, PREMIS + "eventIdentifier")
     eventIDTypeXML = etree.SubElement(
         eventIDXML, PREMIS + "eventIdentifierType"
     )
@@ -216,8 +216,26 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
         eventOutcomeDetailXML = etree.SubElement(
             eventOutcomeInfoXML, PREMIS + "eventOutcomeDetail"
         )
-        eventOutcomeDetailXML.text = outcomeDetail
+        etree.SubElement(eventOutcomeDetailXML, 
+                PREMIS + "eventOutcomeDetailNote").text = outcomeDetail
         # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
+    linkAgentIDXML = etree.SubElement(
+        eventXML, PREMIS + "linkingAgentIdentifier"
+    )
+    linkAgentIDTypeXML = etree.SubElement(
+        linkAgentIDXML, PREMIS + "linkingAgentIdentifierType"
+        )
+    linkAgentIDTypeXML.text = \
+        "http://purl.org/net/untl/vocabularies/identifier-qualifiers/#URL"
+    linkAgentIDValueXML = etree.SubElement(
+        linkAgentIDXML, PREMIS + "linkingAgentIdentifierValue"
+    )
+    linkAgentIDValueXML.text = agentIdentifier
+    linkAgentIDRoleXML = etree.SubElement(
+        linkAgentIDXML, PREMIS + "linkingAgentRole"
+    )
+    linkAgentIDRoleXML.text = \
+        "http://purl.org/net/untl/vocabularies/linkingAgentRoles/#executingProgram"
     for linkObject in linkObjectList:
         linkObjectIDXML = etree.SubElement(
             eventXML, PREMIS + "linkingObjectIdentifier"
@@ -235,23 +253,6 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
                 linkObjectIDXML, PREMIS + "linkingObjectRole"
             )
             linkObjectRoleXML.text = linkObject[2]
-    linkAgentIDXML = etree.SubElement(
-        eventXML, PREMIS + "linkingAgentIdentifier"
-    )
-    linkAgentIDTypeXML = etree.SubElement(
-        linkAgentIDXML, PREMIS + "linkingAgentIdentifierType"
-        )
-    linkAgentIDTypeXML.text = \
-        "http://purl.org/net/untl/vocabularies/identifier-qualifiers/#URL"
-    linkAgentIDValueXML = etree.SubElement(
-        linkAgentIDXML, PREMIS + "linkingAgentIdentifierValue"
-    )
-    linkAgentIDValueXML.text = agentIdentifier
-    linkAgentIDRoleXML = etree.SubElement(
-        linkAgentIDXML, PREMIS + "linkingAgentIdentifierRole"
-    )
-    linkAgentIDRoleXML.text = \
-        "http://purl.org/net/untl/vocabularies/linkingAgentRoles/#executingProgram"
     return eventXML
 
 
