@@ -20,16 +20,16 @@ import os
 import time
 import subprocess
 
-#  not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
+# not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
 svn_version_path = "/usr/bin/svnversion"
 
-#  constants for time parsing/formatting
-#  this is a stub
+# constants for time parsing/formatting
+# this is a stub
 XSDT_FMT = "%Y-%m-%dT%H:%M:%S"
-#  this should never change
+# this should never change
 XSDT_TZ_OFFSET = 19
 
 
@@ -107,10 +107,10 @@ def xsDateTime_parse(xdt_str, as_utc=False):
     else:
         offset_str = ''
 
-    #  parse offset
+    # parse offset
     if not offset_len:
         parsed = naive_dt
-    #  +00:00
+    # +00:00
     elif offset_len is 6:
         if offset_str[0] not in "+-":
             raise InvalidXSDateTime("Malformed offset (missing sign).")
@@ -134,7 +134,7 @@ def xsDateTime_parse(xdt_str, as_utc=False):
         offset *= offset_sign
         timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
         parsed = naive_dt.replace(tzinfo=timezone)
-    #  Z
+    # Z
     elif offset_len is 1:
         if offset_str is 'Z':
             parsed = naive_dt.replace(tzinfo=XSDateTimezone())
