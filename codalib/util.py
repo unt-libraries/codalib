@@ -138,7 +138,8 @@ def xsDateTime_parse(xdt_str, as_utc=False):
     if as_utc:
         offset = parsed.utcoffset()
         parsed = parsed.replace(tzinfo=None)
-        parsed -= offset
+        if offset is not None:
+            parsed -= offset
     return parsed
 
 def xsDateTime_format(xdt):
