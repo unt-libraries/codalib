@@ -18,7 +18,6 @@ def premis_schema():
     """Provides an lxml schema object for the Premis v2 XSD suitable
     for validation.
     """
-
     schema_file = open(os.path.join(SCHEMA_DIR, "premis-v2-3.xsd"))
     schema_doc = etree.parse(schema_file)
     schema = etree.XMLSchema(schema_doc)

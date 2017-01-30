@@ -20,28 +20,31 @@ import os
 import time
 import subprocess
 
-# not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
+#  not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
 svn_version_path = "/usr/bin/svnversion"
 
-# constants for time parsing/formatting
-XSDT_FMT = "%Y-%m-%dT%H:%M:%S" # this is a stub
-XSDT_TZ_OFFSET = 19 # this should never change
+#  constants for time parsing/formatting
+#  this is a stub
+XSDT_FMT = "%Y-%m-%dT%H:%M:%S"
+#  this should never change
+XSDT_TZ_OFFSET = 19
+
 
 class InvalidXSDateTime(Exception):
     pass
 
 
 class XSDateTimezone(tzinfo):
-    """ 
+    """
     Concrete subclass of tzinfo for making sense of timezone offsets.
     Not really worried about localization here, just +/-HHMM
     """
 
     def __init__(self, hours=0, minutes=0, sign=1):
-        self.minutes = hours*60+minutes
+        self.minutes = hours * 60 + minutes
         self.minutes *= sign
 
     def utcoffset(self, dt):
@@ -50,6 +53,7 @@ class XSDateTimezone(tzinfo):
     def dst(self, dt):
         return timedelta(0)
 
+
 def xsDateTime_parse(xdt_str, as_utc=False):
     """
     Parses xsDateTime strings of form 2017-01-27T14:58:00+0600, etc.
@@ -57,7 +61,6 @@ def xsDateTime_parse(xdt_str, as_utc=False):
     is True, in which case a naive datetime object is returned with
     any offset applied.
     """
-
     if not isinstance(xdt_str, basestring):
         raise InvalidXSDateTime(
             "Expecting str or unicode, got {}.".format(type(xdt_str))
@@ -67,7 +70,7 @@ def xsDateTime_parse(xdt_str, as_utc=False):
         # this won't parse the offset (or other tzinfo)
         naive_dt = datetime.strptime(xdt_str[0:XSDT_TZ_OFFSET], XSDT_FMT)
     except:
-        raise InvalidXSDateTime("Malformed date/time ('%s')." % (xdt_str, ))
+        raise InvalidXSDateTime("Malformed date/time ('%s')." % (xdt_str,))
     naive_len = XSDT_TZ_OFFSET
     offset_len = len(xdt_str) - naive_len
     offset_str = xdt_str[-offset_len:]
@@ -76,6 +79,7 @@ def xsDateTime_parse(xdt_str, as_utc=False):
     offset_sign = 1
     parsed = None
 
+    # parse fractional seconds if present
     fsec_i = 0
     if not offset_len:
         parsed = naive_dt
@@ -94,16 +98,20 @@ def xsDateTime_parse(xdt_str, as_utc=False):
             naive_dt += timedelta(milliseconds=fsec*1000)
         else:
             raise InvalidXSDateTime('Malformed fractional seconds.')
-    
+
+    # reset offset length and set offset string to actual offset,
+    # if we found fractional seconds -- otherwise this is all a noop
     offset_len -= fsec_i
     if offset_len:
         offset_str = offset_str[fsec_i:fsec_i+offset_len+1]
     else:
         offset_str = ''
 
+    #  parse offset
     if not offset_len:
         parsed = naive_dt
-    elif offset_len is 6: # +00:00
+    #  +00:00
+    elif offset_len is 6:
         if offset_str[0] not in "+-":
             raise InvalidXSDateTime("Malformed offset (missing sign).")
         elif offset_str[0] is '-':
@@ -112,7 +120,7 @@ def xsDateTime_parse(xdt_str, as_utc=False):
             offset_hours = int(offset_str[1:3])
         except:
             raise InvalidXSDateTime("Malformed offset (invalid hours '%s')"
-                % (offset_str[1:3], )
+                % (offset_str[1:3],)
             )
         if offset_str[3] is not ':':
             raise InvalidXSDateTime("Colon missing in offset (no colon).")
@@ -120,33 +128,38 @@ def xsDateTime_parse(xdt_str, as_utc=False):
             offset_minutes = int(offset_str[4:6])
         except:
             raise InvalidXSDateTime("Malformed offset (invalid minutes '%s')"
-                % (offset_str[4:6], )
+                % (offset_str[4:6],)
             )
-        offset = offset_hours*60+offset_minutes
+        offset = offset_hours * 60 + offset_minutes
         offset *= offset_sign
         timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
         parsed = naive_dt.replace(tzinfo=timezone)
-    elif offset_len is 1: # Z
+    #  Z
+    elif offset_len is 1:
         if offset_str is 'Z':
             parsed = naive_dt.replace(tzinfo=XSDateTimezone())
         else:
-            raise InvaildXSDateTime("Unrecognized timezone identifier '%s'." %
-                (offset_str, )
+            raise InvalidXSDateTime("Unrecognized timezone identifier '%s'." %
+                (offset_str,)
             )
     else:
-        raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str, ))
+        raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str,))
+
+    # flatten into a naive datetime if as_utc is True
     if as_utc:
         offset = parsed.utcoffset()
         parsed = parsed.replace(tzinfo=None)
         if offset is not None:
             parsed -= offset
+
     return parsed
+
 
 def xsDateTime_format(xdt):
     xdt_str = xdt.strftime(XSDT_FMT)
     offset = xdt.utcoffset()
     if offset is None:
-        return xdt_str+'Z'
+        return xdt_str + 'Z'
     offset_hours = offset.days*24+offset.seconds/(60*60)
     offset_minutes = (offset.seconds % (60*60))/60
     xdt_str += "{:+03d}:{:02d}".format(offset_hours, offset_minutes)
@@ -341,7 +354,7 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
         eventOutcomeDetailXML = etree.SubElement(
             eventOutcomeInfoXML, PREMIS + "eventOutcomeDetail"
         )
-        etree.SubElement(eventOutcomeDetailXML, 
+        etree.SubElement(eventOutcomeDetailXML,
                 PREMIS + "eventOutcomeDetailNote").text = outcomeDetail
         # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
     linkAgentIDXML = etree.SubElement(
