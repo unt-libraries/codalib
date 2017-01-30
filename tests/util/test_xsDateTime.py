@@ -6,12 +6,12 @@ from codalib.util import xsDateTime_parse, xsDateTime_format, XSDateTimezone
 def test_parse_date():
 
     dt_str = "2017-01-27T14:43:00+00:00"
-
-    assert isinstance(xsDateTime_parse(dt_str), datetime)
     dt = xsDateTime_parse(dt_str)
+    
+    assert isinstance(dt, datetime)
     assert dt.utcoffset() == timedelta(0)
 
-def test_parse_date2():
+def test_parse_datetime_with_nonzero_offset():
 
     dt_str = "2017-01-27T15:14:00+06:00"
 

@@ -31,10 +31,8 @@ class Test_readANVLString(object):
 
     def test_string_without_colon(self):
         """
-        IndexError is not an appropriate response and
-        will be changed in the future.  This test verifies the function's
-        behavior, but it has been marked as an expected failure because
-        it is not the desired functionality.
+        Verifies malformed ANVL records raise anvl.InvalidANVLRecord
+        exception.
         """
         with pytest.raises(anvl.InvalidANVLRecord):
             anvl.readANVLString('foo bar baz qux')
