@@ -58,6 +58,10 @@ def xsDateTime_parse(xdt_str, as_utc=False):
     any offset applied.
     """
 
+    if not isinstance(xdt_str, basestring):
+        raise InvalidXSDateTime(
+            "Expecting str or unicode, got {}.".format(type(xdt_str))
+        )
 
     try:
         # this won't parse the offset (or other tzinfo)
