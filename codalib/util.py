@@ -65,7 +65,7 @@ def xsDateTime_parse(xdt_str):
     naive_len = XSDT_TZ_OFFSET
     offset_len = len(xdt_str) - naive_len
     offset_str = xdt_str[-offset_len:]
-    offset_hourse = None
+    offset_hours = None
     offset_minutes = None
     offset_sign = 1
     parsed = None
