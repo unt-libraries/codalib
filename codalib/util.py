@@ -50,10 +50,12 @@ class XSDateTimezone(tzinfo):
     def dst(self, dt):
         return timedelta(0)
 
-def xsDateTime_parse(xdt_str):
+def xsDateTime_parse(xdt_str, as_utc=False):
     """
     Parses xsDateTime strings of form 2017-01-27T14:58:00+0600, etc.
-    Returns datetime with tzinfo, if offset included.
+    Returns datetime with tzinfo, if offset included, unless as_utc
+    is True, in which case a naive datetime object is returned with
+    any offset applied.
     """
 
 
@@ -69,6 +71,32 @@ def xsDateTime_parse(xdt_str):
     offset_minutes = None
     offset_sign = 1
     parsed = None
+
+    fsec_i = 0
+    if not offset_len:
+        parsed = naive_dt
+    elif offset_str[0] is '.':
+        if offset_len > 1:
+            fsec_i = 1
+            fsec_chr = offset_str[fsec_i]
+            fsec = ''
+            while fsec_chr.isdigit():
+                fsec += fsec_chr
+                fsec_i += 1
+                if fsec_i >= offset_len:
+                    break
+                fsec_chr = offset_str[fsec_i]
+            fsec = float('.'+fsec)
+            naive_dt += timedelta(milliseconds=fsec*1000)
+        else:
+            raise InvalidXSDateTime('Malformed fractional seconds.')
+    
+    offset_len -= fsec_i
+    if offset_len:
+        offset_str = offset_str[fsec_i:fsec_i+offset_len+1]
+    else:
+        offset_str = ''
+
     if not offset_len:
         parsed = naive_dt
     elif offset_len is 6: # +00:00
@@ -83,7 +111,7 @@ def xsDateTime_parse(xdt_str):
                 % (offset_str[1:3], )
             )
         if offset_str[3] is not ':':
-            raise InvalidXSDateTime("Colon missing in offset.")
+            raise InvalidXSDateTime("Colon missing in offset (no colon).")
         try:
             offset_minutes = int(offset_str[4:6])
         except:
@@ -103,13 +131,17 @@ def xsDateTime_parse(xdt_str):
             )
     else:
         raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str, ))
+    if as_utc:
+        offset = parsed.utcoffset()
+        parsed = parsed.replace(tzinfo=None)
+        parsed -= offset
     return parsed
 
 def xsDateTime_format(xdt):
     xdt_str = xdt.strftime(XSDT_FMT)
     offset = xdt.utcoffset()
     if offset is None:
-        return xdt_str
+        return xdt_str+'Z'
     offset_hours = offset.days*24+offset.seconds/(60*60)
     offset_minutes = (offset.seconds % (60*60))/60
     xdt_str += "{:+03d}:{:02d}".format(offset_hours, offset_minutes)
