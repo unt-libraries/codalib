@@ -71,7 +71,7 @@ def xsDateTime_parse(xdt_str):
     parsed = None
     if not offset_len:
         parsed = naive_dt
-    elif offset_len is 6: # +0000
+    elif offset_len is 6: # +00:00
         if offset_str[0] not in "+-":
             raise InvalidXSDateTime("Malformed offset (missing sign).")
         elif offset_str[0] is '-':
@@ -90,7 +90,7 @@ def xsDateTime_parse(xdt_str):
             raise InvalidXSDateTime("Malformed offset (invalid minutes '%s')"
                 % (offset_str[4:6], )
             )
-        offset = offset_hours*60.0+offset_minutes
+        offset = offset_hours*60+offset_minutes
         offset *= offset_sign
         timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
         parsed = naive_dt.replace(tzinfo=timezone)
