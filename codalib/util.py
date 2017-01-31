@@ -159,7 +159,7 @@ def xsDateTime_format(xdt):
         return xdt_str + 'Z'
     offset_hours = offset.days*24+offset.seconds/(60*60)
     offset_minutes = (offset.seconds % (60*60))/60
-    xdt_str += "{:+03d}:{:02d}".format(offset_hours, offset_minutes)
+    xdt_str += "{0:+03d}:{1:02d}".format(offset_hours, offset_minutes)
     return xdt_str
 
 
