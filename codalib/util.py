@@ -352,12 +352,12 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
             eventOutcomeInfoXML, PREMIS + "eventOutcomeDetail"
         )
         eventOutcomeDetailNoteXML = etree.SubElement(
-                eventOutcomeDetailXML, PREMIS + "eventOutcomeDetailNote"
+            eventOutcomeDetailXML, PREMIS + "eventOutcomeDetailNote"
         )
         eventOutcomeDetailNoteXML.text = outcomeDetail
         # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
     linkAgentIDXML = etree.SubElement(
-            eventXML, PREMIS + "linkingAgentIdentifier")
+        eventXML, PREMIS + "linkingAgentIdentifier")
     linkAgentIDTypeXML = etree.SubElement(
         linkAgentIDXML, PREMIS + "linkingAgentIdentifierType"
     )
