@@ -120,16 +120,14 @@ def xsDateTime_parse(xdt_str, as_utc=False):
             offset_hours = int(offset_str[1:3])
         except:
             raise InvalidXSDateTime("Malformed offset (invalid hours '%s')"
-                % (offset_str[1:3],)
-            )
+                                    % (offset_str[1:3],))
         if offset_str[3] is not ':':
             raise InvalidXSDateTime("Colon missing in offset (no colon).")
         try:
             offset_minutes = int(offset_str[4:6])
         except:
             raise InvalidXSDateTime("Malformed offset (invalid minutes '%s')"
-                % (offset_str[4:6],)
-            )
+                                    % (offset_str[4:6],))
         offset = offset_hours * 60 + offset_minutes
         offset *= offset_sign
         timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
@@ -140,8 +138,7 @@ def xsDateTime_parse(xdt_str, as_utc=False):
             parsed = naive_dt.replace(tzinfo=XSDateTimezone())
         else:
             raise InvalidXSDateTime("Unrecognized timezone identifier '%s'." %
-                (offset_str,)
-            )
+                                    (offset_str,))
     else:
         raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str,))
 
@@ -354,15 +351,16 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
         eventOutcomeDetailXML = etree.SubElement(
             eventOutcomeInfoXML, PREMIS + "eventOutcomeDetail"
         )
-        etree.SubElement(eventOutcomeDetailXML,
-                PREMIS + "eventOutcomeDetailNote").text = outcomeDetail
+        eventOutcomeDetailNoteXML = etree.SubElement(
+                eventOutcomeDetailXML, PREMIS + "eventOutcomeDetailNote"
+        )
+        eventOutcomeDetailNoteXML.text = outcomeDetail
         # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
     linkAgentIDXML = etree.SubElement(
-        eventXML, PREMIS + "linkingAgentIdentifier"
-    )
+            eventXML, PREMIS + "linkingAgentIdentifier")
     linkAgentIDTypeXML = etree.SubElement(
         linkAgentIDXML, PREMIS + "linkingAgentIdentifierType"
-        )
+    )
     linkAgentIDTypeXML.text = \
         "http://purl.org/net/untl/vocabularies/identifier-qualifiers/#URL"
     linkAgentIDValueXML = etree.SubElement(
