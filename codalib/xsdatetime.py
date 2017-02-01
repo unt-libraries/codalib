@@ -140,13 +140,20 @@ def xsDateTime_parse(xdt_str, local_tz="US/Central"):
 
 
 def xsDateTime_format(xdt, default_tz="US/Central"):
-    if xdt.tzinfo is None:
-        xdt = timezone(default_tz).localize(xdt)
     xdt_str = xdt.strftime(XSDT_FMT)
+    if xdt.microsecond:
+        xdt_str += xdt.strftime(".%f")
+    if xdt.tzinfo is None:
+        return xdt_str
     offset = xdt.utcoffset()
-    if offset is None:
-        return xdt_str + 'Z'
     offset_hours = offset.days*24+offset.seconds/(60*60)
     offset_minutes = (offset.seconds % (60*60))/60
     xdt_str += "{0:+03d}:{1:02d}".format(offset_hours, offset_minutes)
     return xdt_str
+
+
+# for testing, etc. -- so tests don't break during dst
+def current_offset(local_tz="US/Central"):
+    local_tz = timezone(local_tz)
+    dt = local_tz.localize(datetime.now())
+    return dt.utcoffset()
