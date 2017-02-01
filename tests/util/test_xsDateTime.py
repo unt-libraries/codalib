@@ -1,25 +1,57 @@
-from datetime import datetime
-from codalib.xsdatetime import xsDateTime_parse, xsDateTime_format, XSDateTimezone
+from datetime import datetime, timedelta
+from codalib.xsdatetime import (
+    xsDateTime_parse, xsDateTime_format, XSDateTimezone,
+    current_offset
+)
+
+
+# get the current utc offset for local time.
+# we have to do this so tests will work during
+# dst and std time
+LOCAL_OFFSET = current_offset()
 
 
 def test_parse_date():
     dt_str = "2017-01-27T14:43:00+00:00"
     dt = xsDateTime_parse(dt_str)
-    equiv = datetime(2017, 1, 27, 8, 43)
+    equiv = datetime(2017, 1, 27, 14, 43) + LOCAL_OFFSET
     assert isinstance(dt, datetime)
     assert dt == equiv
+
+
+def test_parse_naive():
+    dt_str = "2017-02-01T15:49:33.333333"
+    dt = xsDateTime_parse(dt_str)
+    equiv = datetime(2017, 2, 1, 15, 49, 33, 333333)
+    assert dt == equiv
+    assert xsDateTime_format(dt) == dt_str
 
 
 def test_parse_datetime_with_nonzero_offset():
     dt_str = "2017-01-27T15:14:00+06:00"
     dt = xsDateTime_parse(dt_str)
-    equiv = datetime(2017, 1, 27, 3, 14)
+    equiv = datetime(2017, 1, 27, 9, 14) + LOCAL_OFFSET
+    assert dt == equiv
+
+
+def test_parse_with_nonzero_offset_microsecond():
+    dt_str = "2017-01-27T15:14:00.111111+06:00"
+    dt = xsDateTime_parse(dt_str)
+    equiv = datetime(2017, 1, 27, 9, 14, 0, 111111) + LOCAL_OFFSET
+    assert dt == equiv
+
+
+def test_parse_with_nondefault_timezone():
+    dt_str = "2017-01-27T15:14:00.111111+06:00"
+    dt = xsDateTime_parse(dt_str, local_tz="US/Pacific")
+    equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
+    equiv += current_offset("US/Pacific")
     assert dt == equiv
 
 
 def test_format_notzinfo():
     dt = datetime(2017, 1, 27, 15, 16)
-    dt_str = "2017-01-27T15:16:00-06:00"
+    dt_str = "2017-01-27T15:16:00"
     assert xsDateTime_format(dt) == dt_str
 
 
@@ -39,13 +71,15 @@ def test_parse_fractional_seconds_zulu():
 def test_parse_fractional_seconds_offset():
     dt_str = "2017-01-27T15:16:00.59-06:00"
     dt = xsDateTime_parse(dt_str)
-    equiv = datetime(2017, 1, 27, 15, 16, 00, 590000)
+    td = timedelta(hours=-6)
+    equiv = datetime(2017, 1, 27, 21, 16, 00, 590000)
+    equiv += td
     assert dt == equiv
 
 
 def test_format_inandout():
     dt = datetime(2017, 1, 27, 15, 16)
-    dt_str = "2017-01-27T15:16:00-06:00"
+    dt_str = "2017-01-27T15:16:00"
     assert xsDateTime_format(dt) == dt_str
     assert xsDateTime_parse(dt_str) == dt
 
@@ -53,4 +87,7 @@ def test_format_inandout():
 def test_negative_offset():
     dt_str = "2017-01-30T12:02:00-06:00"
     dt = xsDateTime_parse(dt_str)
-    assert dt == datetime(2017, 01, 30, 12, 2, 0)
+    td = timedelta(hours=-6)
+    equiv = datetime(2017, 1, 30, 18, 02)
+    equiv += td
+    assert dt == equiv
