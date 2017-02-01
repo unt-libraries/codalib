@@ -1,5 +1,5 @@
 from datetime import datetime
-from codalib.util import xsDateTime_parse, xsDateTime_format, XSDateTimezone
+from codalib.xsdatetime import xsDateTime_parse, xsDateTime_format, XSDateTimezone
 
 
 def test_parse_date():

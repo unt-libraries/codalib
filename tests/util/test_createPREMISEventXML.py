@@ -4,7 +4,7 @@ from lxml import etree
 import pytest
 
 from codalib import util
-from codalib.util import xsDateTime_format
+from codalib.xsdatetime import xsDateTime_format
 import os
 
 

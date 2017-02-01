@@ -3,6 +3,7 @@ from datetime import datetime
 from lxml import etree
 
 from codalib import bagatom
+from codalib.xsdatetime import xsDateTime_parse
 
 
 xml = """<note>
@@ -53,7 +54,7 @@ def test_uses_date():
     )
     assert len(elements) == 1
 
-    date = datetime.strptime(elements[0].text, bagatom.TIME_FORMAT_STRING)
+    date = xsDateTime_parse(elements[0].text)
     assert date == updated
 
 
