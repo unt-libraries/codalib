@@ -134,7 +134,10 @@ def test_change_default_local_tz():
     dt1 = localize_datetime(xsDateTime_parse(dt_str))
     os1 = current_offset()
     # calculate difference in offsets between central & pacific
-    osdiff = os0.total_seconds()-os1.total_seconds()
+    # we can't use the total_seconds method, as it's absent in 2.6
+    # osdiff = os0.total_seconds()-os1.total_seconds()
+    osdiff = (os0.seconds + os0.days*24*3600)
+    osdiff -= (os1.seconds + os1.days*24*3600)
     osdiff /= 60*60
     osdiff = int(osdiff)
     # should have been returned as pacific
