@@ -149,16 +149,7 @@ def xsDateTime_format(xdt):
     Takes naive or timezone aware datetime and returns a xs:datetime
     compliant string.
     """
-    xdt_str = xdt.strftime(XSDT_FMT)
-    if xdt.microsecond:
-        xdt_str += xdt.strftime(".%f")
-    if xdt.tzinfo is None:
-        return xdt_str
-    offset = xdt.utcoffset()
-    offset_hours = offset.days*24+offset.seconds/(60*60)
-    offset_minutes = (offset.seconds % (60*60))/60
-    xdt_str += "{0:+03d}:{1:02d}".format(offset_hours, offset_minutes)
-    return xdt_str
+    return xdt.isoformat()
 
 
 def localize_datetime(dt, local_tz=None):
