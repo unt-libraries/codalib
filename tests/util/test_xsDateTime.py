@@ -64,7 +64,8 @@ def test_format_wtzinfo():
 def test_parse_fractional_seconds_zulu():
     dt_str = "2017-01-27T15:16:00.59Z"
     dt = xsDateTime_parse(dt_str)
-    equiv = datetime(2017, 1, 27, 9, 16, 0, 590000)
+    equiv = datetime(2017, 1, 27, 15, 16, 0, 590000)
+    equiv += LOCAL_OFFSET
     assert dt == equiv
 
 
@@ -82,6 +83,21 @@ def test_format_inandout():
     dt_str = "2017-01-27T15:16:00"
     assert xsDateTime_format(dt) == dt_str
     assert xsDateTime_parse(dt_str) == dt
+
+
+def test_format_inandout_wtzinfo():
+    dt = datetime(
+        2017, 1, 27, 15, 16, 12, 123456, tzinfo=XSDateTimezone(hours=-11)
+    )
+    naive_dt = dt.replace(tzinfo=None)
+    td = timedelta(hours=-11)
+    # set naive datetime to utc by inverting offset
+    naive_dt -= td
+    # add local offset for naive local time
+    naive_dt += LOCAL_OFFSET
+    dt_str = "2017-01-27T15:16:12.123456-11:00"
+    assert xsDateTime_format(dt) == dt_str
+    assert xsDateTime_parse(dt_str) == naive_dt
 
 
 def test_negative_offset():
