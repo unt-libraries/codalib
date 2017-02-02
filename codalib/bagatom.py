@@ -3,7 +3,7 @@ from . import anvl, APP_AUTHOR
 import urllib
 from lxml import etree
 from datetime import datetime
-from codalib.xsdatetime import xsDateTime_format
+from codalib.xsdatetime import xsDateTime_format, localize_datetime
 
 TIME_FORMAT_STRING = "%Y-%m-%dT%H:%M:%SZ"
 DATE_FORMAT_STRING = "%Y-%m-%d"
@@ -43,9 +43,13 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
             type=alt_type)
 
     if updated is not None:
+        # if updated is a naive datetime, set its timezone to the local one
+        # so the xs:datetime value will include an explicit offset
+        if updated.tzinfo is None:
+            updated = localize_datetime(updated)
         updatedTag.text = xsDateTime_format(updated)
     else:
-        updatedTag.text = xsDateTime_format(datetime.now())
+        updatedTag.text = xsDateTime_format(localize_datetime(datetime.now()))
     if author or author_uri:
         authorTag = etree.SubElement(entryTag, ATOM + "author")
         if author:
@@ -296,7 +300,7 @@ def makeObjectFeed(
         urlTag.text = author.get('uri', 'http://library.unt.edu/')
     # the updated tag is a
     updatedTag = etree.SubElement(feedTag, ATOM + "updated")
-    updatedTag.text = xsDateTime_format(datetime.now())
+    updatedTag.text = xsDateTime_format(localize_datetime(datetime.now()))
     # we will always show the link to the current 'self' page
     linkTag = etree.SubElement(feedTag, ATOM + "link")
     linkTag.set("rel", "self")

@@ -6,6 +6,9 @@ from pytz import timezone, utc as utc_tz
 XSDT_FMT = "%Y-%m-%dT%H:%M:%S"
 # this should never change
 XSDT_TZ_OFFSET = 19
+# the str value to use for default local timezone
+# in localization operations
+DEFAULT_LOCAL_TZ = "US/Central"
 
 
 class InvalidXSDateTime(Exception):
@@ -29,10 +32,10 @@ class XSDateTimezone(tzinfo):
         return timedelta(0)
 
 
-def xsDateTime_parse(xdt_str, local_tz="US/Central"):
+def xsDateTime_parse(xdt_str, local_tz=None):
     """
     Parses xsDateTime strings of form 2017-01-27T14:58:00+0600, etc.
-    Returns a naive datetime in local time according to local_tz.
+    Returns a *naive* datetime in local time according to local_tz.
     """
     if not isinstance(xdt_str, basestring):
         raise InvalidXSDateTime(
@@ -84,6 +87,8 @@ def xsDateTime_parse(xdt_str, local_tz="US/Central"):
     # get local timezone info using local_tz (str)
     # throws pytz.exceptions.UnknownTimezoneError
     # on bad timezone name
+    if local_tz is None:
+        local_tz = DEFAULT_LOCAL_TZ
     local_tz = timezone(local_tz)
 
     # parse offset
@@ -139,7 +144,11 @@ def xsDateTime_parse(xdt_str, local_tz="US/Central"):
     return parsed
 
 
-def xsDateTime_format(xdt, default_tz="US/Central"):
+def xsDateTime_format(xdt):
+    """
+    Takes naive or timezone aware datetime and returns a xs:datetime
+    compliant string.
+    """
     xdt_str = xdt.strftime(XSDT_FMT)
     if xdt.microsecond:
         xdt_str += xdt.strftime(".%f")
@@ -152,8 +161,37 @@ def xsDateTime_format(xdt, default_tz="US/Central"):
     return xdt_str
 
 
-# for testing, etc. -- so tests don't break during dst
-def current_offset(local_tz="US/Central"):
+def localize_datetime(dt, local_tz=None):
+    """
+    Takes a naive datetime and makes it timezone-aware,
+    using the optional local_tz kwarg. Useful for forcing
+    xsDateTime_format to include offsets.
+    """
+    if local_tz is None:
+        local_tz = DEFAULT_LOCAL_TZ
+    local_tz = timezone(local_tz)
+    return local_tz.localize(dt)
+
+
+def current_offset(local_tz=None):
+    """
+    Returns current utcoffset for a timezone. Uses
+    DEFAULT_LOCAL_TZ by default. That value can be
+    changed at runtime using the func below.
+    """
+    if local_tz is None:
+        local_tz = DEFAULT_LOCAL_TZ
     local_tz = timezone(local_tz)
     dt = local_tz.localize(datetime.now())
     return dt.utcoffset()
+
+
+def set_default_local_tz(tzstr):
+    """
+    Sets the default local timezone using tzstr.
+    Returns the previous default timezone str.
+    """
+    global DEFAULT_LOCAL_TZ
+    old_local_tz = DEFAULT_LOCAL_TZ
+    DEFAULT_LOCAL_TZ = tzstr
+    return old_local_tz
