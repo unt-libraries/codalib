@@ -1,8 +1,10 @@
 import os
-from . import anvl, APP_AUTHOR
 import urllib
-from lxml import etree
 from datetime import datetime
+
+from lxml import etree
+
+from . import anvl, APP_AUTHOR
 from codalib.xsdatetime import xsDateTime_format, localize_datetime
 
 TIME_FORMAT_STRING = "%Y-%m-%dT%H:%M:%SZ"

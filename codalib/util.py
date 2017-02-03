@@ -1,25 +1,18 @@
-try:
-    # the json module was included in the stdlib in python 2.6
-    # http://docs.python.org/library/json.html
-    import json
-except ImportError:
-    # simplejson 2.0.9 is available for python 2.4+
-    # http://pypi.python.org/pypi/simplejson/2.0.9
-    # simplejson 1.7.3 is available for python 2.3+
-    # http://pypi.python.org/pypi/simplejson/1.7.3
-    import simplejson as json
-from lxml import etree
-import uuid
-from . import bagatom
-from .xsdatetime import xsDateTime_format
 from datetime import datetime
+import json
+import os
+import subprocess
+import sys
+import tempfile
 import time
 import urllib2
 import urlparse
-import sys
-import tempfile
-import os
-import subprocess
+import uuid
+
+from lxml import etree
+
+from . import bagatom
+from .xsdatetime import xsDateTime_format
 
 # not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
