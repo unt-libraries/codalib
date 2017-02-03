@@ -5,7 +5,7 @@ from codalib.xsdatetime import (
 )
 
 
-# get the current utc offset for local time.
+# Get the current utc offset for local time.
 # we have to do this so tests will work during
 # dst and std time
 LOCAL_OFFSET = current_offset()
@@ -91,9 +91,9 @@ def test_format_inandout_wtzinfo():
     )
     naive_dt = dt.replace(tzinfo=None)
     td = timedelta(hours=-11)
-    # set naive datetime to utc by inverting offset
+    # Set naive datetime to utc by inverting offset
     naive_dt -= td
-    # add local offset for naive local time
+    # Add local offset for naive local time
     naive_dt += LOCAL_OFFSET
     dt_str = "2017-01-27T15:16:12.123456-11:00"
     assert xsDateTime_format(dt) == dt_str
@@ -111,18 +111,18 @@ def test_negative_offset():
 
 def test_localize_and_format():
     dt_str = "2017-02-02T12:33:00"
-    # we can't use the total_seconds method, as it's absent in 2.6
+    # We can't use the total_seconds method, as it's absent in 2.6
     offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days*24*3600)
     offset_hrs /= (60*60)
     sign = '-' if offset_hrs < 0 else '+'
     localized_str = "2017-02-02T12:33:00{0:s}{1:02d}:00"
     localized_str = localized_str.format(sign, abs(offset_hrs))
-    # xsDateTime_parse returns a naive local time
+    # XsDateTime_parse returns a naive local time
     dt = xsDateTime_parse(dt_str)
-    # localize that naive datetime so it becomes tz aware,
+    # Localize that naive datetime so it becomes tz aware,
     # using default local timezone ("US/Central")
     dt = localize_datetime(dt)
-    # the tz-aware local time ought to format to the
+    # The tz-aware local time ought to format to the
     # xsdatetime string constructed above, includes offset
     assert xsDateTime_format(dt) == localized_str
 
@@ -135,17 +135,17 @@ def test_change_default_local_tz():
     old_local_tz = set_default_local_tz("US/Central")
     dt1 = localize_datetime(xsDateTime_parse(dt_str))
     os1 = current_offset()
-    # calculate difference in offsets between central & pacific
+    # Calculate difference in offsets between central & pacific
     # we can't use the total_seconds method, as it's absent in 2.6
     # osdiff = os0.total_seconds()-os1.total_seconds()
     osdiff = (os0.seconds + os0.days*24*3600)
     osdiff -= (os1.seconds + os1.days*24*3600)
     osdiff /= 60*60
     osdiff = int(osdiff)
-    # should have been returned as pacific
+    # Should have been returned as pacific
     assert old_local_tz == "US/Pacific"
-    # the datetimes should have been localized to different timezones
+    # The datetimes should have been localized to different timezones
     assert dt0 != dt1
-    # the difference between the offsets should be -2 hours, since
+    # The difference between the offsets should be -2 hours, since
     # pacific time is 2 hours behind central
     assert osdiff == -2
