@@ -45,8 +45,8 @@ def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
             type=alt_type)
 
     if updated is not None:
-        # if updated is a naive datetime, set its timezone to the local one
-        # so the xs:datetime value will include an explicit offset
+        # If updated is a naive datetime, set its timezone to the local one
+        # So the xs:datetime value will include an explicit offset
         if updated.tzinfo is None:
             updated = localize_datetime(updated)
         updatedTag.text = xsDateTime_format(updated)
@@ -287,23 +287,23 @@ def makeObjectFeed(
     else:
         GETStruct = False
     feedTag = etree.Element(ATOM + "feed", nsmap=ATOM_NSMAP)
-    # the id tag is very similar to the 'self' link
+    # The id tag is very similar to the 'self' link
     idTag = etree.SubElement(feedTag, ATOM + "id")
     idTag.text = "%s/%s" % (webRoot, feedId)
-    # the title is passed in from the calling function
+    # The title is passed in from the calling function
     titleTag = etree.SubElement(feedTag, ATOM + "title")
     titleTag.text = title
-    # the author is passed in from the calling function and required to be valid ATOM
+    # The author is passed in from the calling function and required to be valid ATOM
     if author:
         authorTag = etree.SubElement(feedTag, ATOM + "author")
         nameTag = etree.SubElement(authorTag, ATOM + "name")
         urlTag = etree.SubElement(authorTag, ATOM + "uri")
         nameTag.text = author.get('name', 'UNT')
         urlTag.text = author.get('uri', 'http://library.unt.edu/')
-    # the updated tag is a
+    # The updated tag is a
     updatedTag = etree.SubElement(feedTag, ATOM + "updated")
     updatedTag.text = xsDateTime_format(localize_datetime(datetime.now()))
-    # we will always show the link to the current 'self' page
+    # We will always show the link to the current 'self' page
     linkTag = etree.SubElement(feedTag, ATOM + "link")
     linkTag.set("rel", "self")
     if not request or not request.META['QUERY_STRING']:
@@ -314,7 +314,7 @@ def makeObjectFeed(
                 webRoot, feedId, urllib.urlencode(request.GET, doseq=True)
             )
         )
-    # we always have a last page
+    # We always have a last page
     endLink = etree.SubElement(feedTag, ATOM + "link")
     endLink.set("rel", "last")
     if GETStruct:
@@ -327,7 +327,7 @@ def makeObjectFeed(
             webRoot, feedId, urllib.urlencode(endLinkGS, doseq=True)
         )
     )
-    # we always have a first page
+    # We always have a first page
     startLink = etree.SubElement(feedTag, ATOM + "link")
     startLink.set("rel", "first")
     if GETStruct:
@@ -340,7 +340,7 @@ def makeObjectFeed(
             webRoot, feedId, urllib.urlencode(startLinkGS, doseq=True)
         )
     )
-    # potentially there is a previous page, list it's details
+    # Potentially there is a previous page, list it's details
     if paginator.page(page).has_previous():
         prevLink = etree.SubElement(feedTag, ATOM + "link")
         prevLink.set("rel", "previous")
@@ -355,7 +355,7 @@ def makeObjectFeed(
             webRoot, feedId, urllib.urlencode(prevLinkGS, doseq=True)
         )
         prevLink.set("href", prevLinkText)
-    # potentially there is a next page, fill in it's details
+    # Potentially there is a next page, fill in it's details
     if paginator.page(page).has_next():
         nextLink = etree.SubElement(feedTag, ATOM + "link")
         nextLink.set("rel", "next")
@@ -416,7 +416,7 @@ def addObjectFromXML(xmlObject, XMLToObjectFunc,
     Handle adding or updating the Queue.  Based on XML input.
     """
 
-    # get the current object to update
+    # Get the current object to update
     contentElement = getNodeByName(xmlObject, "content")
     objectNode = getNodeByName(contentElement, topLevelName)
     dupObjects = None
@@ -440,18 +440,18 @@ def updateObjectFromXML(xmlObject, XMLToObjectFunc, topLevelName,
     Handle updating an object.  Based on XML input.
     """
 
-    # get the current object to update
+    # Get the current object to update
     existing_object = XMLToObjectFunc(xmlObject)
-    # iterate over the keys of the translation dictionary from event objects
+    # Iterate over the keys of the translation dictionary from event objects
     # to xml objects, so we can update the fields with the new information
     for k, v in updateList.items():
-        # then hit each node, and see if the tag matches the translation dict
+        # Then hit each node, and see if the tag matches the translation dict
         for node in xmlObject.getiterator():
             node_tag = node.tag.split('}')[1]
             if node_tag in v[0]:
-                # if we find a match, iterate the children
+                # If we find a match, iterate the children
                 for n in node.getiterator():
                     if n.tag.split('}')[1] in v[-1]:
-                        # if we match the final translation, set the new value
+                        # If we match the final translation, set the new value
                         setattr(existing_object, k, n.text)
     return existing_object

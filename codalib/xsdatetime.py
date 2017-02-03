@@ -2,13 +2,13 @@ from datetime import datetime, tzinfo, timedelta
 
 from pytz import timezone, utc as utc_tz
 
-# constants for time parsing/formatting
-# this is a stub
+# Constants for time parsing/formatting
+# This is a stub
 XSDT_FMT = "%Y-%m-%dT%H:%M:%S"
-# this should never change
+# This should never change
 XSDT_TZ_OFFSET = 19
-# the str value to use for default local timezone
-# in localization operations
+# The str value to use for default local timezone
+# In localization operations
 DEFAULT_LOCAL_TZ = "US/Central"
 
 
@@ -44,7 +44,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
         )
 
     try:
-        # this won't parse the offset (or other tzinfo)
+        # This won't parse the offset (or other tzinfo)
         naive_dt = datetime.strptime(xdt_str[0:XSDT_TZ_OFFSET], XSDT_FMT)
     except:
         raise InvalidXSDateTime("Malformed date/time ('%s')." % (xdt_str,))
@@ -57,7 +57,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     offset_sign = 1
     parsed = None
 
-    # parse fractional seconds if present
+    # Parse fractional seconds if present
     fsec_i = 0
     if not offset_len:
         parsed = naive_dt
@@ -77,7 +77,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
         else:
             raise InvalidXSDateTime('Malformed fractional seconds.')
 
-    # reset offset length and set offset string to actual offset,
+    # Reset offset length and set offset string to actual offset,
     # if we found fractional seconds -- otherwise this is all a noop
     offset_len -= fsec_i
     if offset_len:
@@ -85,16 +85,16 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     else:
         offset_str = ''
 
-    # get local timezone info using local_tz (str)
+    # Get local timezone info using local_tz (str)
     # throws pytz.exceptions.UnknownTimezoneError
     # on bad timezone name
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
     local_tz = timezone(local_tz)
 
-    # parse offset
+    # Parse offset
     if not offset_len:
-        # if there is no offset, assume local time
+        # If there is no offset, assume local time
         # and return the naive datetime we have
         parsed = naive_dt
         return parsed
@@ -130,16 +130,16 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     else:
         raise InvalidXSDateTime("Malformed offset '%s'." % (offset_str,))
 
-    # we've parsed the offset str. now,
-    # flatten datetime w/ tzinfo into a
-    # naive datetime, utc
+    # We've parsed the offset str. now,
+    # Flatten datetime w/ tzinfo into a
+    # Naive datetime, utc
     offset = parsed.utcoffset()
     parsed = parsed.replace(tzinfo=None)
     if offset is not None:
         parsed -= offset
-    # add utc timezone info
+    # Add utc timezone info
     parsed = utc_tz.localize(parsed)
-    # convert to local timezone and make naive again
+    # Convert to local timezone and make naive again
     parsed = parsed.astimezone(local_tz).replace(tzinfo=None)
 
     return parsed
