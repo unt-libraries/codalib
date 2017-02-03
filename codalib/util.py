@@ -14,7 +14,7 @@ from lxml import etree
 from . import bagatom
 from .xsdatetime import xsDateTime_format
 
-# not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
+# Not really thrilled about duplicating these globals here -- maybe define them in coda.bagatom?
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
@@ -61,7 +61,7 @@ def waitForURL(url, max_seconds=None):
             pass
         if response is not None and isinstance(response, urllib2.addinfourl):
             if response.getcode() == 200:
-                # we're done, yay!
+                # We're done, yay!
                 return
         timeNow = datetime.now()
         timePassed = timeNow - startTime
@@ -92,10 +92,10 @@ def doWebRequest(url, method="GET", data=None, headers={}):
     A urllib2 wrapper to mimic the functionality of http2lib, but with timeout support
     """
 
-    # initialize variables
+    # Initialize variables
     response = None
     content = None
-    # find condition that matches request
+    # Find condition that matches request
     if method == "HEAD":
         request = HEADREQUEST(url, data=data, headers=headers)
     elif method == "PUT":
@@ -213,7 +213,7 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
             eventOutcomeDetailXML, PREMIS + "eventOutcomeDetailNote"
         )
         eventOutcomeDetailNoteXML.text = outcomeDetail
-        # assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
+        # Assuming it's a list of 3-item tuples here [ ( identifier, type, role) ]
     linkAgentIDXML = etree.SubElement(
         eventXML, PREMIS + "linkingAgentIdentifier")
     linkAgentIDTypeXML = etree.SubElement(
@@ -295,7 +295,7 @@ def updateQueue(destinationRoot, queueDict, debug=False):
     try:
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
     except:
-        # sleep a few minutes then give it a second shot before dying
+        # Sleep a few minutes then give it a second shot before dying
         time.sleep(300)
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
     if response.getcode() != 200:
