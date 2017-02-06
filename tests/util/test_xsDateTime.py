@@ -121,7 +121,7 @@ def test_localize_and_format():
     # XsDateTime_parse returns a naive local time
     dt = xsDateTime_parse(dt_str)
     # Localize that naive datetime so it becomes tz aware,
-    # using default local timezone ("US/Central")
+    # using default local timezone
     dt = localize_datetime(dt)
     # The tz-aware local time ought to format to the
     # xsdatetime string constructed above, includes offset
