@@ -1,6 +1,7 @@
 from datetime import datetime, tzinfo, timedelta
 
-from pytz import timezone, utc as utc_tz
+from pytz import utc as utc_tz
+from tzlocal import get_localzone
 
 # Constants for time parsing/formatting
 # This is a stub
@@ -9,7 +10,7 @@ XSDT_FMT = "%Y-%m-%dT%H:%M:%S"
 XSDT_TZ_OFFSET = 19
 # The str value to use for default local timezone
 # In localization operations
-DEFAULT_LOCAL_TZ = "US/Central"
+DEFAULT_LOCAL_TZ = get_localzone()
 
 
 class InvalidXSDateTime(Exception):
@@ -85,12 +86,11 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     else:
         offset_str = ''
 
-    # Get local timezone info using local_tz (str)
+    # Get local timezone info using local_tz (tzinfo)
     # throws pytz.exceptions.UnknownTimezoneError
     # on bad timezone name
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
-    local_tz = timezone(local_tz)
 
     # Parse offset
     if not offset_len:
@@ -156,12 +156,11 @@ def xsDateTime_format(xdt):
 def localize_datetime(dt, local_tz=None):
     """
     Takes a naive datetime and makes it timezone-aware,
-    using the optional local_tz kwarg. Useful for forcing
+    using the optional local_tz (tzinfo) kwarg. Useful for forcing
     xsDateTime_format to include offsets.
     """
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
-    local_tz = timezone(local_tz)
     return local_tz.localize(dt)
 
 
@@ -173,17 +172,16 @@ def current_offset(local_tz=None):
     """
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
-    local_tz = timezone(local_tz)
     dt = local_tz.localize(datetime.now())
     return dt.utcoffset()
 
 
-def set_default_local_tz(tzstr):
+def set_default_local_tz(new_local_tz):
     """
-    Sets the default local timezone using tzstr.
-    Returns the previous default timezone str.
+    Sets the default local timezone using new_local_tz
+    Returns the previous default timezone info object
     """
     global DEFAULT_LOCAL_TZ
     old_local_tz = DEFAULT_LOCAL_TZ
-    DEFAULT_LOCAL_TZ = tzstr
+    DEFAULT_LOCAL_TZ = new_local_tz
     return old_local_tz

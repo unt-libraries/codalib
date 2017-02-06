@@ -3,6 +3,7 @@ from codalib.xsdatetime import (
     xsDateTime_parse, xsDateTime_format, XSDateTimezone,
     current_offset, localize_datetime, set_default_local_tz
 )
+from pytz import timezone
 
 
 # Get the current utc offset for local time.
@@ -43,9 +44,9 @@ def test_parse_with_nonzero_offset_microsecond():
 
 def test_parse_with_nondefault_timezone():
     dt_str = "2017-01-27T15:14:00.111111+06:00"
-    dt = xsDateTime_parse(dt_str, local_tz="US/Pacific")
+    dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Pacific"))
     equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
-    equiv += current_offset("US/Pacific")
+    equiv += current_offset(timezone("US/Pacific"))
     assert dt == equiv
 
 
@@ -128,11 +129,11 @@ def test_localize_and_format():
 
 
 def test_change_default_local_tz():
-    old_local_tz = set_default_local_tz("US/Pacific")
+    old_local_tz = set_default_local_tz(timezone("US/Pacific"))
     dt_str = "2017-02-02T12:56:44"
     dt0 = localize_datetime(xsDateTime_parse(dt_str))
     os0 = current_offset()
-    old_local_tz = set_default_local_tz("US/Central")
+    old_local_tz = set_default_local_tz(timezone("US/Central"))
     dt1 = localize_datetime(xsDateTime_parse(dt_str))
     os1 = current_offset()
     # Calculate difference in offsets between central & pacific
@@ -143,7 +144,7 @@ def test_change_default_local_tz():
     osdiff /= 60*60
     osdiff = int(osdiff)
     # Should have been returned as pacific
-    assert old_local_tz == "US/Pacific"
+    assert old_local_tz == timezone("US/Pacific")
     # The datetimes should have been localized to different timezones
     assert dt0 != dt1
     # The difference between the offsets should be -2 hours, since
