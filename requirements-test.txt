@@ -2,3 +2,4 @@ pytest>=2.6.4
 mock>=1.0.1
 lxml>=3.3.0
 pytz>=2016.10
+tzlocal>=1.3
