@@ -72,7 +72,7 @@ def test_parse_fractional_seconds_zulu():
 
 def test_parse_fractional_seconds_offset():
     dt_str = "2017-01-27T15:16:00.59-06:00"
-    dt = xsDateTime_parse(dt_str)
+    dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Central"))
     td = timedelta(hours=-6)
     equiv = datetime(2017, 1, 27, 21, 16, 0, 590000)
     equiv += td
@@ -103,7 +103,7 @@ def test_format_inandout_wtzinfo():
 
 def test_negative_offset():
     dt_str = "2017-01-30T12:02:00-06:00"
-    dt = xsDateTime_parse(dt_str)
+    dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Central"))
     td = timedelta(hours=-6)
     equiv = datetime(2017, 1, 30, 18, 2)
     equiv += td
