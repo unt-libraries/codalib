@@ -37,7 +37,7 @@ def test_simpleFeed():
     page_return.has_previous = Mock(return_value=False)
     paginator.page = Mock(return_value=page_return)
     dummy_obj2xml_func = Mock(return_value=oxml)
-    feed_id = 'APP/bag/'
+    feed_id = 'APP/randomcollection/'
     title = 'Bag Feed'
     web_root = 'http://localhost:8787'
 
@@ -49,4 +49,7 @@ def test_simpleFeed():
         namespaces={'a': atom_ns}
     )
     assert len(elements) == 1
-    assert elements[0].attrib["type"] == "text/html"
+    assert elements[0].attrib['type'] == 'text/html'
+    assert elements[0].attrib['href'] == '%s/%s/%s/' % (
+        web_root, 'randomcollection', obj.id
+    )

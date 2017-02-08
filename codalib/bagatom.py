@@ -374,11 +374,16 @@ def makeObjectFeed(
             dateStamp = getattr(o, dateAttr)
         else:
             dateStamp = None
+        althref = feedId.strip('/').split('/')[-1]
+        althref = '%s/%s/%s/' % (
+            webRoot, althref, getattr(o, idAttr)
+        )
         objectEntry = wrapAtom(
             xml=objectXML,
             id='%s/%s%s/' % (webRoot, originalId, getattr(o, idAttr)),
             title=getattr(o, nameAttr),
-            updated=dateStamp,  alt=webRoot+"/bag/"+getattr(o, idAttr),
+            updated=dateStamp,
+            alt=althref
         )
         feedTag.append(objectEntry)
     return feedTag
