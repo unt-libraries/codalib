@@ -1,3 +1,8 @@
+1.0.2
+-----
+
+* Remove hard-coded reference to `bag` collection in Atom feed entry `alt` links. [#18](https://github.com/unt-libraries/codalib/issues/18)
+
 1.0.1
 -----
 
