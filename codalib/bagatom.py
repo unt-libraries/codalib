@@ -439,24 +439,45 @@ def addObjectFromXML(xmlObject, XMLToObjectFunc,
     return newObject
 
 
-def updateObjectFromXML(xmlObject, XMLToObjectFunc, topLevelName,
-                        idKey, updateList):
+def updateObjectFromXML(xml_doc, obj, mapping):
     """
     Handle updating an object.  Based on XML input.
     """
-
-    # Get the current object to update
-    existing_object = XMLToObjectFunc(xmlObject)
+    nsmap = None
+    if isinstance(mapping, dict):
+        # The special key @namespaces is used to pass
+        # namespaces and prefix mappings for xpath selectors.
+        # e.g. {'x': 'http://example.com/namespace'}
+        if '@namespaces' in mapping:
+            nsmap = mapping['@namespaces']
+    else:
+        raise TypeError('Tag-to-property map must be a dict.')
     # Iterate over the keys of the translation dictionary from event objects
     # to xml objects, so we can update the fields with the new information
-    for k, v in updateList.items():
-        # Then hit each node, and see if the tag matches the translation dict
-        for node in xmlObject.getiterator():
-            node_tag = node.tag.split('}')[1]
-            if node_tag in v[0]:
-                # If we find a match, iterate the children
-                for n in node.getiterator():
-                    if n.tag.split('}')[1] in v[-1]:
-                        # If we match the final translation, set the new value
-                        setattr(existing_object, k, n.text)
-    return existing_object
+    for k, v in mapping.items():
+        if k.startswith('@'):
+            continue
+        selected_text = None
+        if isinstance(v, basestring):
+            selector = v
+        elif isinstance(v, list):
+            selector = '/'.join(v)
+        else:
+            raise TypeError(
+                'Invalid tag-to-property mapping dict: ' +
+                'values must be strings or lists, not %s.' % (type(v),)
+            )
+        try:
+            selected_text = xml_doc.xpath(selector, namespaces=nsmap)
+            if isinstance(selected_text, list):
+                selected_text = selected_text[0]
+            selected_text = selected_text.text
+            setattr(obj, k, selected_text)
+        except IndexError:
+            # Assume the value is missing. It's also possible that the
+            # given selector is valid but wrong, but the more common
+            # case is that the element is missing. To be consistent with
+            # the prior implementation, empty resultsets just mean empty
+            # attributes.
+            continue
+    return obj
