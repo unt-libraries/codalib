@@ -13,6 +13,7 @@ FILE_COUNT = 3
 PAYLOAD_SIZE = 1500
 BAGGING_DATE = '2015-01-01'
 BAGIT_CONTENTS = 'BagIt-Version: 0.96\nTag-File-Character-Encoding: UTF-8'
+TEST_ARK_NAAN = 85781
 
 
 @pytest.fixture
@@ -83,6 +84,28 @@ def bagxml_with_bagging_date(monkeypatch):
     }
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: bagtags)
     return bagatom.bagToXML(TEST_PATH)
+
+
+@pytest.fixture
+def bagxml_with_nondefault_ark(monkeypatch):
+    """
+    Test fixture that patches the following functions:
+        open()
+        bagatom.getBagTags()
+        bagatom.getOxum()
+
+    Returns a predefined set of tags, including the
+    Bagging-Date tag. Sets ark to non-default value.
+    """
+    m = mock_open(read_data=BAGIT_CONTENTS)
+    monkeypatch.setattr('__builtin__.open', m)
+
+    bagtags = {
+        'Payload-Oxum': '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT),
+        'Bagging-Date': BAGGING_DATE
+    }
+    monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: bagtags)
+    return bagatom.bagToXML(TEST_PATH, ark_naan=TEST_ARK_NAAN)
 
 
 def test_returns_tree(bagxml):
@@ -208,3 +231,14 @@ def test_return_tree_with_baggingDate(bagxml_with_bagging_date):
         namespaces={'a': bagatom.BAG_NAMESPACE}
     )
     assert baggingDate[0].text == BAGGING_DATE
+
+
+def test_set_ark_nan(bagxml_with_nondefault_ark):
+    """
+    Check that the ARK NAAN is properly set and that it both can be
+    changed at runtime by a library user and defaults to 67531.
+    """
+    bagxml = bagxml_with_nondefault_ark
+    bag_el, ark = bagxml
+    ark = int(ark.split('/')[1])
+    assert ark == TEST_ARK_NAAN
