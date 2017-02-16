@@ -22,6 +22,8 @@ NODE_NAMESPACE = "http://digital2.library.unt.edu/coda/nodexml/"
 NODE = "{%s}" % NODE_NAMESPACE
 NODE_NSMAP = {"node": NODE_NAMESPACE}
 
+DEFAULT_ARK_NAAN = 67531
+
 
 def wrapAtom(xml, id, title, author=None, updated=None, author_uri=None,
              alt=None, alt_type="text/html"):
@@ -95,16 +97,20 @@ def getBagTags(bagInfoPath):
     return bagTags
 
 
-def bagToXML(bagPath):
+def bagToXML(bagPath, ark_naan=None):
     """
     Given a path to a bag, read stuff about it and make an XML file
     """
+    # This is so .DEFAULT_ARK_NAAN can be modified
+    # at runtime.
+    if ark_naan is None:
+        ark_naan = DEFAULT_ARK_NAAN
     bagInfoPath = os.path.join(bagPath, "bag-info.txt")
     bagTags = getBagTags(bagInfoPath)
     if 'Payload-Oxum' not in bagTags:
         bagTags['Payload-Oxum'] = getOxum(os.path.join(bagPath, "data"))
     oxumParts = bagTags['Payload-Oxum'].split(".", 1)
-    bagName = "ark:/67531/" + os.path.split(bagPath)[1]
+    bagName = "ark:/%d/" % ark_naan + os.path.split(bagPath)[1]
     bagSize = oxumParts[0]
     bagFileCount = oxumParts[1]
     bagitString = open(os.path.join(bagPath, "bagit.txt"), "r").read()
