@@ -236,7 +236,7 @@ def test_return_tree_with_baggingDate(bagxml_with_bagging_date):
 def test_set_ark_nan(bagxml_with_nondefault_ark):
     """
     Check that the ARK NAAN is properly set and that it both can be
-    changed at runtime by a library user and defaults to 67531.
+    changed at runtime by a library user.
     """
     bagxml = bagxml_with_nondefault_ark
     bag_el, ark = bagxml
