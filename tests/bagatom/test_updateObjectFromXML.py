@@ -175,7 +175,7 @@ def test_object_returns_unmodified(person_xml, mini_mock):
     assert person0.__dict__ == person1.__dict__
 
 
-def test_mapping_w_namespaces(event_atom):
+def test_mapping_w_namespaces(event_atom, mini_mock):
     """
     Check that properties are mapped as expected from xml documents
     with multiple namespaces.
