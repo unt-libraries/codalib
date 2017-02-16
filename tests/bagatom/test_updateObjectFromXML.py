@@ -102,7 +102,9 @@ def test_object_properties_match_xml(person_xml, mini_mock):
     person0.nickname = None
     person0.first_name = None
 
-    person1 = deepcopy(person0)
+    person1 = mini_mock()
+    person1.nickname = None
+    person1.first_name = None
 
     # The mappings for XML -> Object translation. This will tell the function
     # to get the firstName element and assign it to the first_name attribute on
@@ -128,15 +130,14 @@ def test_object_does_not_have_xml_property(person_xml, mini_mock):
 
     # We will not setup the mock this time to verify that the function
     # will still add those attributes.
-    person0 = mini_mock()
-    person1 = deepcopy(person0)
+    person = mini_mock()
 
     mapping = {
         '@namespaces': {'x': 'http://example.com/namespace'},
         'nickname': ['x:nickname']}
-    bagatom.updateObjectFromXML(tree, person1, mapping)
+    bagatom.updateObjectFromXML(tree, person, mapping)
 
-    assert person1.nickname == 'Jim'
+    assert person.nickname == 'Jim'
 
 
 def test_xml_does_not_have_property(person_xml, mini_mock):
@@ -146,8 +147,7 @@ def test_xml_does_not_have_property(person_xml, mini_mock):
     """
     tree = etree.fromstring(person_xml)
 
-    person0 = mini_mock()
-    person1 = deepcopy(person0)
+    person = mini_mock()
 
     # The phone element does not exist in the XML that is being passed into
     # updateObjectFromXML.
@@ -155,11 +155,9 @@ def test_xml_does_not_have_property(person_xml, mini_mock):
         '@namespaces': {'x': 'http://example.com/namespace'},
         'phone': ['x:phone']
     }
-    bagatom.updateObjectFromXML(tree, person1, mapping)
+    bagatom.updateObjectFromXML(tree, person, mapping)
 
-    assert hasattr(person0, 'phone') is False
-    # Assert that the returned object does not include the phone attribute.
-    assert hasattr(person1, 'phone') is False
+    assert hasattr(person, 'phone') is False
 
 
 def test_object_returns_unmodified(person_xml, mini_mock):
@@ -170,7 +168,7 @@ def test_object_returns_unmodified(person_xml, mini_mock):
     tree = etree.fromstring(person_xml)
 
     person0 = mini_mock()
-    person1 = deepcopy(person0)
+    person1 = mini_mock()
 
     mapping = {}
     bagatom.updateObjectFromXML(tree, person1, mapping)
@@ -182,7 +180,6 @@ def test_mapping_w_namespaces(event_atom):
     Check that properties are mapped as expected from xml documents
     with multiple namespaces.
     """
-
     atom_tree = etree.fromstring(event_atom)
     event_tree = atom_tree.xpath(
         '//atom:content/premis:event', namespaces={
@@ -199,10 +196,7 @@ def test_mapping_w_namespaces(event_atom):
         '/premis:eventOutcome'
     map_dict['event_outcome_detail'] = 'premis:eventOutcomeInformation' +\
         '/premis:eventOutcomeDetail/premis:eventOutcomeDetailNote'
-
-    person0 = mini_mock()
-    person1 = deepcopy(person0)
-
-    bagatom.updateObjectFromXML(event_tree, person1, map_dict)
-
-    assert person0.event_outcome == person1.event_outcome
+    expected = 'http://purl.org/net/untl/vocabularies/eventOutcomes/#success'
+    event = mini_mock()
+    bagatom.updateObjectFromXML(event_tree, event, map_dict)
+    assert expected == event.event_outcome.strip()
