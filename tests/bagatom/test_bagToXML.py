@@ -70,7 +70,6 @@ def bagxml_with_bagging_date(monkeypatch):
     Test fixture that patches the following functions:
         open()
         bagatom.getBagTags()
-        bagatom.getOxum()
 
     Returns a predefined set of tags, including the
     Bagging-Date tag.
@@ -92,7 +91,6 @@ def bagxml_with_nondefault_ark(monkeypatch):
     Test fixture that patches the following functions:
         open()
         bagatom.getBagTags()
-        bagatom.getOxum()
 
     Returns a predefined set of tags, including the
     Bagging-Date tag. Sets ark to non-default value.

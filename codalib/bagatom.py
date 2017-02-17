@@ -110,7 +110,7 @@ def bagToXML(bagPath, ark_naan=None):
     if 'Payload-Oxum' not in bagTags:
         bagTags['Payload-Oxum'] = getOxum(os.path.join(bagPath, "data"))
     oxumParts = bagTags['Payload-Oxum'].split(".", 1)
-    bagName = "ark:/%d/" % ark_naan + os.path.split(bagPath)[1]
+    bagName = "ark:/%d/%s" % (ark_naan, os.path.split(bagPath)[1])
     bagSize = oxumParts[0]
     bagFileCount = oxumParts[1]
     bagitString = open(os.path.join(bagPath, "bagit.txt"), "r").read()
@@ -470,7 +470,7 @@ def updateObjectFromXML(xml_doc, obj, mapping):
             selector = '/'.join(v)
         else:
             raise TypeError(
-                'Invalid tag-to-property mapping dict: ' +
+                'Invalid tag-to-property mapping dict: '
                 'values must be strings or lists, not %s.' % (type(v),)
             )
         try:
