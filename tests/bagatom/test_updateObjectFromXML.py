@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 from lxml import etree
 import pytest
 
@@ -192,9 +190,9 @@ def test_mapping_w_namespaces(event_atom, mini_mock):
     map_dict['@namespaces'] = {
         'premis': 'info:lc/xmlns/premis-v2'
     }
-    map_dict['event_outcome'] = 'premis:eventOutcomeInformation' +\
+    map_dict['event_outcome'] = 'premis:eventOutcomeInformation' + \
         '/premis:eventOutcome'
-    map_dict['event_outcome_detail'] = 'premis:eventOutcomeInformation' +\
+    map_dict['event_outcome_detail'] = 'premis:eventOutcomeInformation' + \
         '/premis:eventOutcomeDetail/premis:eventOutcomeDetailNote'
     expected = 'http://purl.org/net/untl/vocabularies/eventOutcomes/#success'
     event = mini_mock()
