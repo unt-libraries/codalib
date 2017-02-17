@@ -1,3 +1,8 @@
+1.0.3
+-----
+
+* More precise element selection in xml-to-object mapping. [#21](https://github.com/unt-libraries/codalib/issues/21)
+
 1.0.2
 -----
 
