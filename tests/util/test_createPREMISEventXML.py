@@ -459,9 +459,9 @@ def test_linkingObjectRole_element_text():
 @pytest.mark.parametrize('object_list', [
     [('a', 'b', 'c', 'd'), ('e', 'f', 'g', 'h')],
     [('a', 'b', 'c'), ('d', 'e', 'f')],
-    pytest.mark.xfail([('a', 'b'), ('c', 'd')]),
-    pytest.mark.xfail([('a',), ('b',)]),
-    pytest.mark.xfail([(), ()])
+    pytest.param([('a', 'b'), ('c', 'd')], marks=pytest.mark.xfail),
+    pytest.param([('a',), ('b',)], marks=pytest.mark.xfail),
+    pytest.param([(), ()], marks=pytest.mark.xfail)
 ])
 def test_linkObjectList_handles_any_size_tuple(object_list, premis_args):
     """
