@@ -1,10 +1,9 @@
-import os
-
 from lxml import etree
 from mock import mock_open, patch
 import pytest
 
 from codalib import bagatom
+
 
 @patch('codalib.bagatom.os.stat')
 @patch('codalib.bagatom.os.walk')
