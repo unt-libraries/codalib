@@ -73,8 +73,8 @@ def xsDateTime_parse(xdt_str, local_tz=None):
                 if fsec_i >= offset_len:
                     break
                 fsec_chr = offset_str[fsec_i]
-            fsec = float('.'+fsec)
-            naive_dt += timedelta(milliseconds=fsec*1000)
+            fsec = float('.' + fsec)
+            naive_dt += timedelta(milliseconds=fsec * 1000)
         else:
             raise InvalidXSDateTime('Malformed fractional seconds.')
 
@@ -82,7 +82,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     # if we found fractional seconds -- otherwise this is all a noop
     offset_len -= fsec_i
     if offset_len:
-        offset_str = offset_str[fsec_i:fsec_i+offset_len+1]
+        offset_str = offset_str[fsec_i:fsec_i + offset_len + 1]
     else:
         offset_str = ''
 

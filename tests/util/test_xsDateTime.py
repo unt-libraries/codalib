@@ -113,8 +113,8 @@ def test_negative_offset():
 def test_localize_and_format():
     dt_str = "2017-02-02T12:33:00"
     # We can't use the total_seconds method, as it's absent in 2.6
-    offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days*24*3600)
-    offset_hrs /= (60*60)
+    offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days * 24 * 3600)
+    offset_hrs /= (60 * 60)
     sign = '-' if offset_hrs < 0 else '+'
     localized_str = "2017-02-02T12:33:00{0:s}{1:02d}:00"
     localized_str = localized_str.format(sign, abs(offset_hrs))
@@ -139,9 +139,9 @@ def test_change_default_local_tz():
     # Calculate difference in offsets between central & pacific
     # we can't use the total_seconds method, as it's absent in 2.6
     # osdiff = os0.total_seconds()-os1.total_seconds()
-    osdiff = (os0.seconds + os0.days*24*3600)
-    osdiff -= (os1.seconds + os1.days*24*3600)
-    osdiff /= 60*60
+    osdiff = (os0.seconds + os0.days * 24 * 3600)
+    osdiff -= (os1.seconds + os1.days * 24 * 3600)
+    osdiff /= 60 * 60
     osdiff = int(osdiff)
     # Should have been returned as pacific
     assert old_local_tz == timezone("US/Pacific")

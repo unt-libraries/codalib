@@ -308,8 +308,8 @@ def test_eventOutcomeDetail_element_text():
     premis = util.createPREMISEventXML(None, None, None, None,
                                        outcomeDetail=outcomeDetail)
     eventOutcomeDetailNote = premis.xpath(
-        '/p:event/p:eventOutcomeInformation/p:eventOutcomeDetail/' +
-        'p:eventOutcomeDetailNote',
+        ('/p:event/p:eventOutcomeInformation/p:eventOutcomeDetail/'
+         'p:eventOutcomeDetailNote'),
         namespaces={'p': util.PREMIS_NAMESPACE}
     )
     assert len(eventOutcomeDetailNote) == 1
