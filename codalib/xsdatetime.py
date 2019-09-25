@@ -62,7 +62,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     fsec_i = 0
     if not offset_len:
         parsed = naive_dt
-    elif offset_str[0] is '.':
+    elif offset_str[0] == '.':
         if offset_len > 1:
             fsec_i = 1
             fsec_chr = offset_str[fsec_i]
@@ -99,17 +99,17 @@ def xsDateTime_parse(xdt_str, local_tz=None):
         parsed = naive_dt
         return parsed
     # +00:00
-    elif offset_len is 6:
+    elif offset_len == 6:
         if offset_str[0] not in "+-":
             raise InvalidXSDateTime("Malformed offset (missing sign).")
-        elif offset_str[0] is '-':
+        elif offset_str[0] == '-':
             offset_sign = -1
         try:
             offset_hours = int(offset_str[1:3])
         except:
             raise InvalidXSDateTime("Malformed offset (invalid hours '%s')"
                                     % (offset_str[1:3],))
-        if offset_str[3] is not ':':
+        if offset_str[3] != ':':
             raise InvalidXSDateTime("Colon missing in offset (no colon).")
         try:
             offset_minutes = int(offset_str[4:6])
@@ -121,8 +121,8 @@ def xsDateTime_parse(xdt_str, local_tz=None):
         faux_timezone = XSDateTimezone(offset_hours, offset_minutes, offset_sign)
         parsed = naive_dt.replace(tzinfo=faux_timezone)
     # Z
-    elif offset_len is 1:
-        if offset_str is 'Z':
+    elif offset_len == 1:
+        if offset_str == 'Z':
             parsed = naive_dt.replace(tzinfo=XSDateTimezone())
         else:
             raise InvalidXSDateTime("Unrecognized timezone identifier '%s'." %
