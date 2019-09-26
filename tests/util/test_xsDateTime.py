@@ -49,9 +49,7 @@ def test_parse_with_nondefault_timezone():
     tz_pkl = "cpytz\n_p\np0\n(S'America/Los_Angeles'\np1\nI-28380\nI0\nS'LMT'\np2\ntp3\nRp4\n."
     nondefault_tz = pickle.loads(tz_pkl)
     dt = xsDateTime_parse(dt_str, local_tz=nondefault_tz)
-    equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
-    equiv += current_offset(nondefault_tz)
-    assert dt == equiv
+    assert dt == datetime(2017, 1, 27, 1, 14, 0, 111111)
 
 
 def test_format_notzinfo():
