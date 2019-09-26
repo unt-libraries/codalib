@@ -1,3 +1,4 @@
+import pickle
 from datetime import datetime, timedelta
 from codalib.xsdatetime import (
     xsDateTime_parse, xsDateTime_format, XSDateTimezone,
@@ -44,9 +45,12 @@ def test_parse_with_nonzero_offset_microsecond():
 
 def test_parse_with_nondefault_timezone():
     dt_str = "2017-01-27T15:14:00.111111+06:00"
-    dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Pacific"))
+    # Use a pickled tzlocal timzone to be consistent with DST.
+    tz_pkl = "cpytz\n_p\np0\n(S'America/Los_Angeles'\np1\nI-28380\nI0\nS'LMT'\np2\ntp3\nRp4\n."
+    nondefault_tz = pickle.loads(tz_pkl)
+    dt = xsDateTime_parse(dt_str, local_tz=nondefault_tz)
     equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
-    equiv += current_offset(timezone("US/Pacific"))
+    equiv += current_offset(nondefault_tz)
     assert dt == equiv
 
 
