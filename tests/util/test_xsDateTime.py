@@ -5,12 +5,13 @@ from codalib.xsdatetime import (
     current_offset, localize_datetime, set_default_local_tz
 )
 from pytz import timezone
+from tzlocal import get_localzone
 
 
-# Get the current utc offset for local time.
-# we have to do this so tests will work during
-# dst and std time
-LOCAL_OFFSET = current_offset()
+# Get the utc offset for the datetime object used in tests in local time.
+# we have to do this so tests will work during dst and std time.
+DEFAULT_LOCAL_TZ = get_localzone()
+LOCAL_OFFSET = DEFAULT_LOCAL_TZ.localize(datetime(2017, 1, 27, 14, 43)).utcoffset()
 
 
 def test_parse_date():
