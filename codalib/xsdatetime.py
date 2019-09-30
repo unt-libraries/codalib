@@ -47,7 +47,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     try:
         # This won't parse the offset (or other tzinfo)
         naive_dt = datetime.strptime(xdt_str[0:XSDT_TZ_OFFSET], XSDT_FMT)
-    except:
+    except ValueError:
         raise InvalidXSDateTime("Malformed date/time ('%s')." % (xdt_str,))
 
     naive_len = XSDT_TZ_OFFSET
@@ -106,14 +106,14 @@ def xsDateTime_parse(xdt_str, local_tz=None):
             offset_sign = -1
         try:
             offset_hours = int(offset_str[1:3])
-        except:
+        except ValueError:
             raise InvalidXSDateTime("Malformed offset (invalid hours '%s')"
                                     % (offset_str[1:3],))
         if offset_str[3] != ':':
             raise InvalidXSDateTime("Colon missing in offset (no colon).")
         try:
             offset_minutes = int(offset_str[4:6])
-        except:
+        except ValueError:
             raise InvalidXSDateTime("Malformed offset (invalid minutes '%s')"
                                     % (offset_str[4:6],))
         offset = offset_hours * 60 + offset_minutes

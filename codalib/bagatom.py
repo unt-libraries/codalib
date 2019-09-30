@@ -149,7 +149,7 @@ def getValueByName(node, name):
 
     try:
         value = node.xpath("*[local-name() = '%s']" % name)[0].text.strip()
-    except:
+    except IndexError:
         return None
     return value
 
@@ -167,7 +167,7 @@ def getNodeByName(node, name):
         raise Exception("Unspecified name to find node for.")
     try:
         childNode = node.xpath("*[local-name() = '%s']" % name)[0]
-    except:
+    except IndexError:
         return None
     return childNode
 
@@ -176,11 +176,7 @@ def getNodesByName(parent, name):
     """
     Return a list of all of the child nodes matching a given local name
     """
-
-    try:
-        childNodes = parent.xpath("*[local-name() = '%s']" % name)
-    except:
-        return []
+    childNodes = parent.xpath("*[local-name() = '%s']" % name)
     return childNodes
 
 
