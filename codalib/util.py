@@ -294,7 +294,7 @@ def updateQueue(destinationRoot, queueDict, debug=False):
         print uploadXMLText
     try:
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
-    except (urllib2.URLError, urllib2.HTTPError):
+    except urllib2.URLError:
         # Sleep a few minutes then give it a second shot before dying
         time.sleep(300)
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
