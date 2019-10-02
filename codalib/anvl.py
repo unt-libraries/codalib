@@ -26,7 +26,7 @@ def readANVLString(string):
             continue
         if ":" not in line:
             raise InvalidANVLRecord(
-                "Missing colon in line %d of ANVL record." % (index+1,)
+                "Missing colon in line %d of ANVL record." % (index + 1,)
             )
         parts = line.split(":", 1)
         key = parts[0].strip()

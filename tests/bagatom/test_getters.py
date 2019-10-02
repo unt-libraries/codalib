@@ -1,13 +1,13 @@
-import os
-
 from lxml import etree
-from mock import mock_open
+from mock import mock_open, patch
 import pytest
 
 from codalib import bagatom
 
 
-def test_getOxum(monkeypatch):
+@patch('codalib.bagatom.os.stat')
+@patch('codalib.bagatom.os.walk')
+def test_getOxum(mock_walk, mock_stat):
     """
     Check the return value of getOxum with patched system calls.
 
@@ -15,25 +15,11 @@ def test_getOxum(monkeypatch):
     of files in the directory in the form of
     `<total size>.<total files>`
     """
+    mock_walk.return_value = [('/foo', ('bar',), ('baz',)),
+                              ('/foo/bar', (), ('spam', 'eggs'))]
+    mock_stat.return_value.st_size = 500
 
-    def walk(thin):
-        """Stub for os.walk."""
-        return [
-            ('/foo', ('bar',), ('baz',)),
-            ('/foo/bar', (), ('spam', 'eggs'))
-        ]
-
-    class MockStat(object):
-        """Stub for os.stat."""
-        st_size = 500
-
-        def __init__(self, *args):
-            pass
-
-    monkeypatch.setattr(os, 'walk', walk)
-    monkeypatch.setattr(os, 'stat', MockStat)
-
-    assert bagatom.getOxum('') == "1500.3"
+    assert bagatom.getOxum('/some/fake/dir') == '1500.3'
 
 
 @pytest.fixture(scope='module')

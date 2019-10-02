@@ -4,12 +4,13 @@ from codalib.xsdatetime import (
     current_offset, localize_datetime, set_default_local_tz
 )
 from pytz import timezone
+from tzlocal import get_localzone
 
 
-# Get the current utc offset for local time.
-# we have to do this so tests will work during
-# dst and std time
-LOCAL_OFFSET = current_offset()
+# Get the utc offset for the datetime object used in tests in local time.
+# we have to do this so tests will work during dst and std time.
+DEFAULT_LOCAL_TZ = get_localzone()
+LOCAL_OFFSET = DEFAULT_LOCAL_TZ.localize(datetime(2017, 1, 27, 14, 43)).utcoffset()
 
 
 def test_parse_date():
@@ -46,7 +47,7 @@ def test_parse_with_nondefault_timezone():
     dt_str = "2017-01-27T15:14:00.111111+06:00"
     dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Pacific"))
     equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
-    equiv += current_offset(timezone("US/Pacific"))
+    equiv += timezone("US/Pacific").localize(datetime(2017, 1, 27, 9, 14, 0, 111111)).utcoffset()
     assert dt == equiv
 
 
@@ -113,8 +114,8 @@ def test_negative_offset():
 def test_localize_and_format():
     dt_str = "2017-02-02T12:33:00"
     # We can't use the total_seconds method, as it's absent in 2.6
-    offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days*24*3600)
-    offset_hrs /= (60*60)
+    offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days * 24 * 3600)
+    offset_hrs /= (60 * 60)
     sign = '-' if offset_hrs < 0 else '+'
     localized_str = "2017-02-02T12:33:00{0:s}{1:02d}:00"
     localized_str = localized_str.format(sign, abs(offset_hrs))
@@ -139,9 +140,9 @@ def test_change_default_local_tz():
     # Calculate difference in offsets between central & pacific
     # we can't use the total_seconds method, as it's absent in 2.6
     # osdiff = os0.total_seconds()-os1.total_seconds()
-    osdiff = (os0.seconds + os0.days*24*3600)
-    osdiff -= (os1.seconds + os1.days*24*3600)
-    osdiff /= 60*60
+    osdiff = (os0.seconds + os0.days * 24 * 3600)
+    osdiff -= (os1.seconds + os1.days * 24 * 3600)
+    osdiff /= 60 * 60
     osdiff = int(osdiff)
     # Should have been returned as pacific
     assert old_local_tz == timezone("US/Pacific")
