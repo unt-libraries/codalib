@@ -53,37 +53,22 @@ def test_getBagTags_returns_dict(monkeypatch):
     # Patch the builtin function `open` with the mock_open
     # function.
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
 
     tags = bagatom.getBagTags('.')
     assert tags == {'tag': 'tag'}
 
 
-def test_getBagTags_open_decodes_utf8(monkeypatch):
+def test_getBagTags_open(monkeypatch):
     """
-    Check that getBagTags decodes the file contents from UTF-8.
+    Check that getBagTags opens and reads the file contents.
 
     To verify this, we assert that the mock was only called once.
     """
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
     bagatom.getBagTags('.')
     assert m.call_count == 1
-
-
-def test_getBagTags_open_decodes_iso8859_1(monkeypatch):
-    """
-    Check that getBagTags decodes the file contents from ISO-8859-1.
-
-    To verify this, we assert that the mock was called twice. The first
-    attempt trying to decode UTF-8, then retrying with ISO-8859-1.
-    """
-    m = mock_open(read_data='tag: \x81')
-    monkeypatch.setattr('__builtin__.open', m)
-    tags = bagatom.getBagTags('.')
-
-    assert m.call_count == 2
-    assert tags == {'tag': u'\x81'}
 
 
 def test_getValueByName_returns_value(note_xml):

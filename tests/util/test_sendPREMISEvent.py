@@ -1,4 +1,4 @@
-from urllib2 import URLError
+from urllib.error import URLError
 
 from mock import Mock
 import pytest

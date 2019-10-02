@@ -25,7 +25,7 @@ def bagxml(monkeypatch):
         bagatom.getOxum()
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
 
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: {})
 
@@ -48,7 +48,7 @@ def bagxml_with_tags(monkeypatch):
     Returns a predefined set of tags.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Source-Organization': 'Test Org',
@@ -75,7 +75,7 @@ def bagxml_with_bagging_date(monkeypatch):
     Bagging-Date tag.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Payload-Oxum': '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT),
@@ -96,7 +96,7 @@ def bagxml_with_nondefault_ark(monkeypatch):
     Bagging-Date tag. Sets ark to non-default value.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('__builtin__.open', m)
+    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Payload-Oxum': '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT),

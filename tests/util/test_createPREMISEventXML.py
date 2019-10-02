@@ -35,7 +35,7 @@ def premis_args():
         outcomeDetail='lots of music',
         eventIdentifier='1102 ave B.',
         linkObjectList=['abc', 'bcd'],
-        eventDate=datetime(2015, 01, 01)
+        eventDate=datetime(2015, 1, 1)
     )
 
 
@@ -44,7 +44,7 @@ def test_validate_eventxml(premis_args, premis_schema):
     Check produced PREMIS Event xml against schema
     """
     premis = util.createPREMISEventXML(**premis_args)
-    premis_schema.assert_(premis)
+    premis_schema.validate(premis)
 
 
 def test_return_value(premis_args):
@@ -212,7 +212,7 @@ def test_eventDateTime_element_has_custom_datetime():
     Verify the eventDate kwarg yields an eventDateTime element with
     the text from the argument.
     """
-    dt = datetime(2015, 01, 01)
+    dt = datetime(2015, 1, 1)
     premis = util.createPREMISEventXML(None, None, None, None, eventDate=dt)
     eventDateTime = premis.xpath(
         '/p:event/p:eventDateTime',

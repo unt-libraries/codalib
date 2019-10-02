@@ -20,7 +20,7 @@ def test_return_value(monkeypatch):
         ]
     })
 
-    monkeypatch.setattr('__builtin__.open', mock_open(read_data=read_data))
+    monkeypatch.setattr('builtins.open', mock_open(read_data=read_data))
     choices = util.parseVocabularySources('/foo/bar')
 
     assert len(choices) == 4
@@ -38,7 +38,7 @@ def test_return_value_elements(monkeypatch):
         ]
     })
 
-    monkeypatch.setattr('__builtin__.open', mock_open(read_data=read_data))
+    monkeypatch.setattr('builtins.open', mock_open(read_data=read_data))
     choices = util.parseVocabularySources('/foo/bar')
     assert choices.pop() == ('foo', 'Foo')
 
@@ -48,7 +48,7 @@ def test_empty_file_does_not_raise_exception(monkeypatch):
     """
     Verify that an exception will not be raised if the file is empty.
     """
-    monkeypatch.setattr('__builtin__.open', mock_open())
+    monkeypatch.setattr('builtins.open', mock_open())
     util.parseVocabularySources('/foo/bar')
 
 
@@ -59,5 +59,5 @@ def test_empty_json_does_not_raise_exception(monkeypatch):
     object, but the object is empty.
     """
     read_data = json.dumps({})
-    monkeypatch.setattr('__builtin__.open', mock_open(read_data=read_data))
+    monkeypatch.setattr('builtins.open', mock_open(read_data=read_data))
     util.parseVocabularySources('/foo/bar')

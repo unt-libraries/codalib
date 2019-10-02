@@ -39,7 +39,7 @@ def xsDateTime_parse(xdt_str, local_tz=None):
     Parses xsDateTime strings of form 2017-01-27T14:58:00+0600, etc.
     Returns a *naive* datetime in local time according to local_tz.
     """
-    if not isinstance(xdt_str, basestring):
+    if not isinstance(xdt_str, str):
         raise InvalidXSDateTime(
             "Expecting str or unicode, got {}.".format(type(xdt_str))
         )
