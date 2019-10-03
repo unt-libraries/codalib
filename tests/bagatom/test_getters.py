@@ -71,6 +71,18 @@ def test_getBagTags_open(monkeypatch):
     assert m.call_count == 1
 
 
+def test_getBagTags_open_iso8859_1(tmp_path):
+    """
+    Check that getBagTags reads a file encoded in ISO-8859-1.
+    """
+    text_file = tmp_path / 'iso8859.txt'
+    # Create a file encoded in ISO-8859-1.
+    text_file.write_text('tag: Norén leaves Malmö and crosses the Øresund',
+                         encoding='iso-8859-1')
+    tags = bagatom.getBagTags(text_file)
+    assert tags == {'tag': 'Norén leaves Malmö and crosses the Øresund'}
+
+
 def test_getValueByName_returns_value(note_xml):
     """
     Check that getValueByName returns the correct value.
