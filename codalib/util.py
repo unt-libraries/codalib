@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 import os
-import subprocess
 import sys
 import tempfile
 import time
@@ -249,17 +248,6 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
             )
             linkObjectRoleXML.text = linkObject[2]
     return eventXML
-
-
-def get_svn_revision(path=None):
-
-    if not path:
-        path = os.path.dirname(sys.argv[0])
-    path = os.path.abspath(path)
-    exec_list = [svn_version_path, path]
-    proc = subprocess.Popen(exec_list, stdout=subprocess.PIPE)
-    out, errs = proc.communicate()
-    return out.strip()
 
 
 def deleteQueue(destinationRoot, queueArk, debug=False):
