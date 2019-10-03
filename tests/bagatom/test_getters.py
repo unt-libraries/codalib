@@ -79,7 +79,7 @@ def test_getBagTags_open_iso8859_1(tmp_path):
     # Create a file encoded in ISO-8859-1.
     text_file.write_text('tag: Norén leaves Malmö and crosses the Øresund',
                          encoding='iso-8859-1')
-    tags = bagatom.getBagTags(text_file)
+    tags = bagatom.getBagTags(str(text_file))
     assert tags == {'tag': 'Norén leaves Malmö and crosses the Øresund'}
 
 
