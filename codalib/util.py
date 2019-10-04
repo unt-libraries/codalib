@@ -17,7 +17,6 @@ from .xsdatetime import xsDateTime_format
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
-svn_version_path = "/usr/bin/svnversion"
 
 
 def parseVocabularySources(jsonFilePath):
