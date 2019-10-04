@@ -44,7 +44,7 @@ def test_validate_eventxml(premis_args, premis_schema):
     Check produced PREMIS Event xml against schema
     """
     premis = util.createPREMISEventXML(**premis_args)
-    premis_schema.validate(premis)
+    premis_schema.assertValid(premis)
 
 
 def test_return_value(premis_args):
