@@ -88,8 +88,10 @@ def getBagTags(bagInfoPath):
     """
     get bag tags
     """
-
-    bagInfoString = open(bagInfoPath, "r").read()
+    try:
+        bagInfoString = open(bagInfoPath, "r").read()
+    except UnicodeDecodeError:
+        bagInfoString = open(bagInfoPath, "r", encoding="ISO-8859-1").read()
     bagTags = anvl.readANVLString(bagInfoString)
     return bagTags
 

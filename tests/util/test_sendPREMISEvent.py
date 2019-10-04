@@ -1,7 +1,7 @@
 from datetime import datetime
 from urllib.error import URLError
 
-from mock import Mock, patch
+from mock import Mock, patch, mock_open, call
 import pytest
 
 from codalib import util
@@ -83,11 +83,34 @@ def test_raises_exception_without_201_status(monkeypatch):
     """
     response = Mock(code=200)
 
-    expected = (response, 'Fake content')
+    expected = (response, b'Fake content')
     doWebRequest = Mock(return_value=expected)
     monkeypatch.setattr('codalib.util.doWebRequest', doWebRequest)
 
     with pytest.raises(Exception):
         util.sendPREMISEvent('http://example.com', None, None, None, None)
 
+    assert doWebRequest.call_count == 1
+
+
+def test_raises_exception_without_201_status_with_debug(monkeypatch):
+    """
+    Verify that response content is written to file when sendPREMISEvent
+    will raise an exception when the returned response does not have a
+    status code 201 with debug=True.
+    """
+    response = Mock(code=200)
+
+    expected = (response, b'Fake content')
+    doWebRequest = Mock(return_value=expected)
+    monkeypatch.setattr('codalib.util.doWebRequest', doWebRequest)
+
+    m = mock_open()
+    monkeypatch.setattr('builtins.open', m)
+
+    with pytest.raises(Exception):
+        util.sendPREMISEvent('http://example.com', None, None, None, None, debug=True)
+
+    calls = [call().write(b'Fake content'), call().close()]
+    m.assert_has_calls(calls, any_order=True)
     assert doWebRequest.call_count == 1

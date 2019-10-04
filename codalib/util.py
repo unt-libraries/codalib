@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 import os
-import sys
 import tempfile
 import time
 import urllib.request
@@ -133,7 +132,7 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
         linkObjectList=linkObjectList
     )
     atomXML = bagatom.wrapAtom(eventXML, id=atomID, title=atomID)
-    atomXMLText = '<?xml version="1.0"?>\n%s' % etree.tostring(
+    atomXMLText = b'<?xml version="1.0"?>\n%s' % etree.tostring(
         atomXML, pretty_print=True
     )
     if debug:
@@ -152,10 +151,10 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
             tfPath = os.path.join(
                 tempdir, "premis_upload_%s.html" % uuid.uuid1().hex
             )
-            tf = open(tfPath, "w")
+            tf = open(tfPath, "wb")
             tf.write(content)
             tf.close()
-            sys.stderr.write(
+            print(
                 "Output from webserver available at %s. Response code %s" % (
                     tf.name, response.code
                 )
