@@ -53,9 +53,8 @@ def test_getBagTags_returns_dict(monkeypatch):
     # Patch the builtin function `open` with the mock_open
     # function.
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('builtins.open', m)
-
-    tags = bagatom.getBagTags('.')
+    with patch('codalib.bagatom.open', m):
+        tags = bagatom.getBagTags('.')
     assert tags == {'tag': 'tag'}
 
 
@@ -66,8 +65,8 @@ def test_getBagTags_open(monkeypatch):
     To verify this, we assert that the mock was only called once.
     """
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('builtins.open', m)
-    bagatom.getBagTags('.')
+    with patch('codalib.bagatom.open', m):
+        bagatom.getBagTags('.')
     assert m.call_count == 1
 
 

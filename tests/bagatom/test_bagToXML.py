@@ -1,6 +1,6 @@
 import os
 
-from mock import mock_open
+from mock import mock_open, patch
 import pytest
 
 from codalib import bagatom
@@ -25,7 +25,6 @@ def bagxml(monkeypatch):
         bagatom.getOxum()
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('builtins.open', m)
 
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: {})
 
@@ -33,8 +32,8 @@ def bagxml(monkeypatch):
         'codalib.bagatom.getOxum',
         lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT)
     )
-
-    return bagatom.bagToXML(TEST_PATH)
+    with patch('codalib.bagatom.open', m):
+        return bagatom.bagToXML(TEST_PATH)
 
 
 @pytest.fixture
@@ -48,7 +47,6 @@ def bagxml_with_tags(monkeypatch):
     Returns a predefined set of tags.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Source-Organization': 'Test Org',
@@ -60,8 +58,8 @@ def bagxml_with_tags(monkeypatch):
         'codalib.bagatom.getOxum',
         lambda x: '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT)
     )
-
-    return bagatom.bagToXML(TEST_PATH)
+    with patch('codalib.bagatom.open', m):
+        return bagatom.bagToXML(TEST_PATH)
 
 
 @pytest.fixture
@@ -75,14 +73,14 @@ def bagxml_with_bagging_date(monkeypatch):
     Bagging-Date tag.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Payload-Oxum': '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT),
         'Bagging-Date': BAGGING_DATE
     }
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: bagtags)
-    return bagatom.bagToXML(TEST_PATH)
+    with patch('codalib.bagatom.open', m):
+        return bagatom.bagToXML(TEST_PATH)
 
 
 @pytest.fixture
@@ -96,14 +94,14 @@ def bagxml_with_nondefault_ark(monkeypatch):
     Bagging-Date tag. Sets ark to non-default value.
     """
     m = mock_open(read_data=BAGIT_CONTENTS)
-    monkeypatch.setattr('builtins.open', m)
 
     bagtags = {
         'Payload-Oxum': '{0}.{1}'.format(PAYLOAD_SIZE, FILE_COUNT),
         'Bagging-Date': BAGGING_DATE
     }
     monkeypatch.setattr('codalib.bagatom.getBagTags', lambda x: bagtags)
-    return bagatom.bagToXML(TEST_PATH, ark_naan=TEST_ARK_NAAN)
+    with patch('codalib.bagatom.open', m):
+        return bagatom.bagToXML(TEST_PATH, ark_naan=TEST_ARK_NAAN)
 
 
 def test_returns_tree(bagxml):

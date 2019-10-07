@@ -106,11 +106,11 @@ def test_raises_exception_without_201_status_with_debug(monkeypatch):
     monkeypatch.setattr('codalib.util.doWebRequest', doWebRequest)
 
     m = mock_open()
-    monkeypatch.setattr('builtins.open', m)
 
     with pytest.raises(Exception):
-        util.sendPREMISEvent('http://example.com', None, None, None, None, debug=True)
+        with patch('codalib.util.open', m):
+            util.sendPREMISEvent('http://example.com', None, None, None, None, debug=True)
 
     calls = [call().write(b'Fake content'), call().close()]
-    m.assert_has_calls(calls, any_order=True)
+    m.assert_has_calls(calls)
     assert doWebRequest.call_count == 1
