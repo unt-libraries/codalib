@@ -46,7 +46,7 @@ def people_xml():
     """
 
 
-def test_getBagTags_returns_dict(monkeypatch):
+def test_getBagTags_returns_dict():
     """
     Check the return value of getBagTags.
     """
@@ -58,7 +58,7 @@ def test_getBagTags_returns_dict(monkeypatch):
     assert tags == {'tag': 'tag'}
 
 
-def test_getBagTags_open(monkeypatch):
+def test_getBagTags_open():
     """
     Check that getBagTags opens and reads the file contents.
 
