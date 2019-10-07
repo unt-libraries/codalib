@@ -163,7 +163,7 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
                 webRoot, response.code
             )
         )
-    return (response, content)
+    return response, content
 
 
 def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
@@ -273,9 +273,9 @@ def updateQueue(destinationRoot, queueDict, debug=False):
     queueXML = bagatom.queueEntryToXML(attrDict)
     urlID = os.path.join(destinationRoot, attrDict.ark)
     uploadXML = bagatom.wrapAtom(queueXML, id=urlID, title=attrDict.ark)
-    uploadXMLText = '<?xml version="1.0"?>\n' + etree.tostring(
+    uploadXMLText = b'<?xml version="1.0"?>\n' + etree.tostring(
         uploadXML, pretty_print=True
-    ).decode()
+    )
     if debug:
         print("Sending XML to %s" % url)
         print(uploadXMLText)
