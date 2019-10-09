@@ -1,4 +1,4 @@
-from urllib2 import Request
+from urllib.request import Request
 
 from codalib import util
 

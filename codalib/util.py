@@ -1,12 +1,11 @@
 from datetime import datetime
 import json
 import os
-import subprocess
-import sys
 import tempfile
 import time
-import urllib2
-import urlparse
+import urllib.request
+import urllib.error
+import urllib.parse
 import uuid
 
 from lxml import etree
@@ -18,7 +17,6 @@ from .xsdatetime import xsDateTime_format
 PREMIS_NAMESPACE = "info:lc/xmlns/premis-v2"
 PREMIS = "{%s}" % PREMIS_NAMESPACE
 PREMIS_NSMAP = {"premis": PREMIS_NAMESPACE}
-svn_version_path = "/usr/bin/svnversion"
 
 
 def parseVocabularySources(jsonFilePath):
@@ -31,17 +29,17 @@ def parseVocabularySources(jsonFilePath):
     return choiceList
 
 
-class HEADREQUEST(urllib2.Request):
+class HEADREQUEST(urllib.request.Request):
     def get_method(self):
         return "HEAD"
 
 
-class PUTREQUEST(urllib2.Request):
+class PUTREQUEST(urllib.request.Request):
     def get_method(self):
         return "PUT"
 
 
-class DELETEREQUEST(urllib2.Request):
+class DELETEREQUEST(urllib.request.Request):
     def get_method(self):
         return "DELETE"
 
@@ -56,10 +54,10 @@ def waitForURL(url, max_seconds=None):
     while True:
         response = None
         try:
-            response = urllib2.urlopen(HEADREQUEST(url))
-        except urllib2.URLError:
+            response = urllib.request.urlopen(HEADREQUEST(url))
+        except urllib.error.URLError:
             pass
-        if response is not None and isinstance(response, urllib2.addinfourl):
+        if response is not None and isinstance(response, urllib.request.addinfourl):
             if response.getcode() == 200:
                 # We're done, yay!
                 return
@@ -81,7 +79,7 @@ def doWaitWebRequest(url, method="GET", data=None, headers={}):
         completed = True
         try:
             response, content = doWebRequest(url, method, data, headers)
-        except urllib2.URLError:
+        except urllib.error.URLError:
             completed = False
             waitForURL(url)
     return response, content
@@ -89,7 +87,7 @@ def doWaitWebRequest(url, method="GET", data=None, headers={}):
 
 def doWebRequest(url, method="GET", data=None, headers={}):
     """
-    A urllib2 wrapper to mimic the functionality of http2lib, but with timeout support
+    A urllib wrapper to mimic the functionality of http2lib, but with timeout support
     """
 
     # Initialize variables
@@ -103,11 +101,11 @@ def doWebRequest(url, method="GET", data=None, headers={}):
     elif method == "DELETE":
         request = DELETEREQUEST(url, headers=headers)
     elif method == "GET":
-        request = urllib2.Request(url, headers=headers)
+        request = urllib.request.Request(url, headers=headers)
     # POST?
     else:
-        request = urllib2.Request(url, data=data, headers=headers)
-    response = urllib2.urlopen(request)
+        request = urllib.request.Request(url, data=data, headers=headers)
+    response = urllib.request.urlopen(request)
     if response:
         content = response.read()
     return response, content
@@ -133,15 +131,15 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
         linkObjectList=linkObjectList
     )
     atomXML = bagatom.wrapAtom(eventXML, id=atomID, title=atomID)
-    atomXMLText = '<?xml version="1.0"?>\n%s' % etree.tostring(
+    atomXMLText = b'<?xml version="1.0"?>\n%s' % etree.tostring(
         atomXML, pretty_print=True
     )
     if debug:
-        print "Uploading XML to %s\n---\n%s\n---\n" % (webRoot, atomXMLText)
+        print("Uploading XML to %s\n---\n%s\n---\n" % (webRoot, atomXMLText))
     response = None
     try:
         response, content = doWebRequest(webRoot, "POST", data=atomXMLText)
-    except urllib2.URLError:
+    except urllib.error.URLError:
         pass
     if not response:
         waitForURL(webRoot, 60)
@@ -152,10 +150,10 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
             tfPath = os.path.join(
                 tempdir, "premis_upload_%s.html" % uuid.uuid1().hex
             )
-            tf = open(tfPath, "w")
+            tf = open(tfPath, "wb")
             tf.write(content)
             tf.close()
-            sys.stderr.write(
+            print(
                 "Output from webserver available at %s. Response code %s" % (
                     tf.name, response.code
                 )
@@ -165,7 +163,7 @@ def sendPREMISEvent(webRoot, eventType, agentIdentifier, eventDetail,
                 webRoot, response.code
             )
         )
-    return (response, content)
+    return response, content
 
 
 def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
@@ -250,23 +248,12 @@ def createPREMISEventXML(eventType, agentIdentifier, eventDetail, eventOutcome,
     return eventXML
 
 
-def get_svn_revision(path=None):
-
-    if not path:
-        path = os.path.dirname(sys.argv[0])
-    path = os.path.abspath(path)
-    exec_list = [svn_version_path, path]
-    proc = subprocess.Popen(exec_list, stdout=subprocess.PIPE)
-    out, errs = proc.communicate()
-    return out.strip()
-
-
 def deleteQueue(destinationRoot, queueArk, debug=False):
     """
     Delete an entry from the queue
     """
 
-    url = urlparse.urljoin(destinationRoot, "APP/queue/" + queueArk + "/")
+    url = urllib.parse.urljoin(destinationRoot, "APP/queue/" + queueArk + "/")
     response, content = doWaitWebRequest(url, "DELETE")
     if response.getcode() != 200:
         raise Exception(
@@ -282,19 +269,19 @@ def updateQueue(destinationRoot, queueDict, debug=False):
     """
 
     attrDict = bagatom.AttrDict(queueDict)
-    url = urlparse.urljoin(destinationRoot, "APP/queue/" + attrDict.ark + "/")
+    url = urllib.parse.urljoin(destinationRoot, "APP/queue/" + attrDict.ark + "/")
     queueXML = bagatom.queueEntryToXML(attrDict)
     urlID = os.path.join(destinationRoot, attrDict.ark)
     uploadXML = bagatom.wrapAtom(queueXML, id=urlID, title=attrDict.ark)
-    uploadXMLText = '<?xml version="1.0"?>\n' + etree.tostring(
+    uploadXMLText = b'<?xml version="1.0"?>\n' + etree.tostring(
         uploadXML, pretty_print=True
     )
     if debug:
-        print "Sending XML to %s" % url
-        print uploadXMLText
+        print("Sending XML to %s" % url)
+        print(uploadXMLText)
     try:
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)
-    except urllib2.URLError:
+    except urllib.error.URLError:
         # Sleep a few minutes then give it a second shot before dying
         time.sleep(300)
         response, content = doWebRequest(url, "PUT", data=uploadXMLText)

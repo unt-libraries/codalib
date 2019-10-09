@@ -74,7 +74,7 @@ def writeANVLString(ANVLDict):
     Take a dictionary and write out they key/value pairs in ANVL format
     """
     lines = []
-    keys = ANVLDict.keys()
+    keys = list(ANVLDict.keys())
     keys.sort()
     for key in keys:
         value = ANVLDict[key]

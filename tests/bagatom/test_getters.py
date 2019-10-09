@@ -46,44 +46,40 @@ def people_xml():
     """
 
 
-def test_getBagTags_returns_dict(monkeypatch):
+def test_getBagTags_returns_dict():
     """
     Check the return value of getBagTags.
     """
     # Patch the builtin function `open` with the mock_open
     # function.
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('__builtin__.open', m)
-
-    tags = bagatom.getBagTags('.')
+    with patch('codalib.bagatom.open', m):
+        tags = bagatom.getBagTags('.')
     assert tags == {'tag': 'tag'}
 
 
-def test_getBagTags_open_decodes_utf8(monkeypatch):
+def test_getBagTags_open():
     """
-    Check that getBagTags decodes the file contents from UTF-8.
+    Check that getBagTags opens and reads the file contents.
 
     To verify this, we assert that the mock was only called once.
     """
     m = mock_open(read_data='tag: tag')
-    monkeypatch.setattr('__builtin__.open', m)
-    bagatom.getBagTags('.')
+    with patch('codalib.bagatom.open', m):
+        bagatom.getBagTags('.')
     assert m.call_count == 1
 
 
-def test_getBagTags_open_decodes_iso8859_1(monkeypatch):
+def test_getBagTags_open_iso8859_1(tmp_path):
     """
-    Check that getBagTags decodes the file contents from ISO-8859-1.
-
-    To verify this, we assert that the mock was called twice. The first
-    attempt trying to decode UTF-8, then retrying with ISO-8859-1.
+    Check that getBagTags reads a file encoded in ISO-8859-1.
     """
-    m = mock_open(read_data='tag: \x81')
-    monkeypatch.setattr('__builtin__.open', m)
-    tags = bagatom.getBagTags('.')
-
-    assert m.call_count == 2
-    assert tags == {'tag': u'\x81'}
+    text_file = tmp_path / 'iso8859.txt'
+    # Create a file encoded in ISO-8859-1.
+    text_file.write_text('tag: Norén leaves Malmö and crosses the Øresund',
+                         encoding='iso-8859-1')
+    tags = bagatom.getBagTags(str(text_file))
+    assert tags == {'tag': 'Norén leaves Malmö and crosses the Øresund'}
 
 
 def test_getValueByName_returns_value(note_xml):
