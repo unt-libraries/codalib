@@ -7,13 +7,13 @@ class InvalidANVLRecord(Exception):
     pass
 
 
-def readANVLString(string):
+def readANVLString(ANVL_string):
     """
     Take a string in ANVL format and break it into a dictionary of key/values
     """
 
     ANVLDict = {}
-    ANVLLines = string.split("\n")
+    ANVLLines = ANVL_string.split("\n")
     lineCount = len(ANVLLines)
     index = 0
     while index < lineCount:
