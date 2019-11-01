@@ -49,24 +49,24 @@ def readANVLString(ANVL_string):
     return ANVLDict
 
 
-def breakString(string, width=79, firstLineOffset=0):
+def breakString(text, width=79, firstLineOffset=0):
     originalWidth = width
     width = width - firstLineOffset
-    if len(string) < width + 1:
-        return string
+    if len(text) < width + 1:
+        return text
     index = width
     while index > 0:
-        if ' ' == string[index]:
-            if not string[index + 1].isspace() and not \
-                    string[index - 1].isspace():
-                stringPart1 = string[0:index]
-                stringPart2 = string[index:]
+        if ' ' == text[index]:
+            if not text[index + 1].isspace() and not \
+                    text[index - 1].isspace():
+                stringPart1 = text[0:index]
+                stringPart2 = text[index:]
                 return "%s\n%s" % (
                     stringPart1,
                     breakString(stringPart2, originalWidth)
                 )
         index = index - 1
-    return string
+    return text
 
 
 def writeANVLString(ANVLDict):
