@@ -1,7 +1,7 @@
 from datetime import datetime
+from unittest.mock import Mock, patch, mock_open, call
 from urllib.error import URLError
 
-from mock import Mock, patch, mock_open, call
 import pytest
 
 from codalib import util

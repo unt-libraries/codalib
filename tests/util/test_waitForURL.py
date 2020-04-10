@@ -1,8 +1,7 @@
 from time import sleep
+from unittest.mock import MagicMock
 import urllib.request
 import urllib.error
-
-from mock import MagicMock
 
 from codalib.util import waitForURL
 

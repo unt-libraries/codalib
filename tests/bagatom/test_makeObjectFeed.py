@@ -1,6 +1,8 @@
+from unittest.mock import Mock
+
 from lxml import etree
+
 from codalib.bagatom import makeObjectFeed, ATOM_NAMESPACE as atom_ns
-from mock import Mock
 
 
 def test_simpleFeed():

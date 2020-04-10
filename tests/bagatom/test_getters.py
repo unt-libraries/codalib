@@ -1,6 +1,7 @@
-from lxml import etree
-from mock import mock_open, patch
+from unittest.mock import mock_open, patch
+
 import pytest
+from lxml import etree
 
 from codalib import bagatom
 
