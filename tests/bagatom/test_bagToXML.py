@@ -1,6 +1,6 @@
 import os
+from unittest.mock import mock_open, patch
 
-from mock import mock_open, patch
 import pytest
 
 from codalib import bagatom
