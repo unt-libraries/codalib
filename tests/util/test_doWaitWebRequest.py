@@ -1,6 +1,5 @@
-from urllib2 import URLError
-
-from mock import Mock
+from unittest.mock import Mock
+from urllib.error import URLError
 
 from codalib import util
 

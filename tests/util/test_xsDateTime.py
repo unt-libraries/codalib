@@ -115,7 +115,7 @@ def test_localize_and_format():
     dt_str = "2017-02-02T12:33:00"
     # We can't use the total_seconds method, as it's absent in 2.6
     offset_hrs = int(LOCAL_OFFSET.seconds + LOCAL_OFFSET.days * 24 * 3600)
-    offset_hrs /= (60 * 60)
+    offset_hrs //= (60 * 60)
     sign = '-' if offset_hrs < 0 else '+'
     localized_str = "2017-02-02T12:33:00{0:s}{1:02d}:00"
     localized_str = localized_str.format(sign, abs(offset_hrs))

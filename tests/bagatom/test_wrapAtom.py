@@ -202,7 +202,7 @@ def test_content_is_preserved():
         '/a:entry/a:content',
         namespaces={'a': bagatom.ATOM_NAMESPACE}
     )
-    assert xml.strip() in etree.tostring(content[0])
+    assert xml.strip() in etree.tostring(content[0]).decode()
 
 
 def test_has_alternate_relationship_link():

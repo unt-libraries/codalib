@@ -15,7 +15,7 @@ class NodeStub(object):
     node_path = '/foo/bar/node'
     node_capacity = 4096
     node_size = 2048
-    last_checked = datetime(2015, 01, 01)
+    last_checked = datetime(2015, 1, 1)
 
 
 def test_return_type():

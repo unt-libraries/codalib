@@ -1,3 +1,7 @@
+2.0.0
+-----
+* Upgrade to python3. [#29](https://github.com/unt-libraries/codalib/issues/29)
+
 1.0.3
 -----
 

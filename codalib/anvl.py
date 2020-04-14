@@ -7,13 +7,13 @@ class InvalidANVLRecord(Exception):
     pass
 
 
-def readANVLString(string):
+def readANVLString(ANVL_string):
     """
     Take a string in ANVL format and break it into a dictionary of key/values
     """
 
     ANVLDict = {}
-    ANVLLines = string.split("\n")
+    ANVLLines = ANVL_string.split("\n")
     lineCount = len(ANVLLines)
     index = 0
     while index < lineCount:
@@ -49,24 +49,24 @@ def readANVLString(string):
     return ANVLDict
 
 
-def breakString(string, width=79, firstLineOffset=0):
+def breakString(text, width=79, firstLineOffset=0):
     originalWidth = width
     width = width - firstLineOffset
-    if len(string) < width + 1:
-        return string
+    if len(text) < width + 1:
+        return text
     index = width
     while index > 0:
-        if ' ' == string[index]:
-            if not string[index + 1].isspace() and not \
-                    string[index - 1].isspace():
-                stringPart1 = string[0:index]
-                stringPart2 = string[index:]
+        if ' ' == text[index]:
+            if not text[index + 1].isspace() and not \
+                    text[index - 1].isspace():
+                stringPart1 = text[0:index]
+                stringPart2 = text[index:]
                 return "%s\n%s" % (
                     stringPart1,
                     breakString(stringPart2, originalWidth)
                 )
         index = index - 1
-    return string
+    return text
 
 
 def writeANVLString(ANVLDict):
@@ -74,7 +74,7 @@ def writeANVLString(ANVLDict):
     Take a dictionary and write out they key/value pairs in ANVL format
     """
     lines = []
-    keys = ANVLDict.keys()
+    keys = list(ANVLDict.keys())
     keys.sort()
     for key in keys:
         value = ANVLDict[key]

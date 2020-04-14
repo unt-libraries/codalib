@@ -3,7 +3,7 @@ A helper library for [coda](https://github.com/unt-libraries/coda)
 
 ## System Requirements
 
-* python-dev (Python 2.7)
+* python-dev (Python 3)
 * libxml2-dev
 * libxslt-dev
 

@@ -1,5 +1,5 @@
 import os
-import urllib
+import urllib.parse
 from datetime import datetime
 
 from lxml import etree
@@ -73,8 +73,8 @@ def getOxum(dataPath):
     Calculate the oxum for a given path
     """
 
-    fileCount = 0L
-    fileSizeTotal = 0L
+    fileCount = 0
+    fileSizeTotal = 0
     for root, dirs, files in os.walk(dataPath):
         for fileName in files:
             fullName = os.path.join(root, fileName)
@@ -88,11 +88,10 @@ def getBagTags(bagInfoPath):
     """
     get bag tags
     """
-
     try:
-        bagInfoString = open(bagInfoPath, "r").read().decode('utf-8')
+        bagInfoString = open(bagInfoPath, "r").read()
     except UnicodeDecodeError:
-        bagInfoString = open(bagInfoPath, "r").read().decode('iso-8859-1')
+        bagInfoString = open(bagInfoPath, "r", encoding="ISO-8859-1").read()
     bagTags = anvl.readANVLString(bagInfoString)
     return bagTags
 
@@ -237,7 +236,7 @@ def queueEntryToXML(queueEntry):
     statusTag.text = queueEntry.status
     if hasattr(queueEntry, "harvest_start") and queueEntry.harvest_start:
         startTag = etree.SubElement(xmlRoot, QXML + "start")
-        if isinstance(queueEntry.harvest_start, basestring):
+        if isinstance(queueEntry.harvest_start, str):
             startTag.text = queueEntry.harvest_start
         else:
             startTag.text = queueEntry.harvest_start.strftime(
@@ -245,7 +244,7 @@ def queueEntryToXML(queueEntry):
             )
     if hasattr(queueEntry, "harvest_end") and queueEntry.harvest_end:
         endTag = etree.SubElement(xmlRoot, QXML + "end")
-        if isinstance(queueEntry.harvest_end, basestring):
+        if isinstance(queueEntry.harvest_end, str):
             endTag.text = queueEntry.harvest_end
         else:
             endTag.text = queueEntry.harvest_end.strftime(TIME_FORMAT_STRING)
@@ -313,7 +312,7 @@ def makeObjectFeed(
     else:
         linkTag.set(
             "href", "%s/%s?%s" % (
-                webRoot, feedId, urllib.urlencode(request.GET, doseq=True)
+                webRoot, feedId, urllib.parse.urlencode(request.GET, doseq=True)
             )
         )
     # We always have a last page
@@ -326,7 +325,7 @@ def makeObjectFeed(
     endLinkGS.update({"page": paginator.num_pages})
     endLink.set(
         "href", "%s/%s?%s" % (
-            webRoot, feedId, urllib.urlencode(endLinkGS, doseq=True)
+            webRoot, feedId, urllib.parse.urlencode(endLinkGS, doseq=True)
         )
     )
     # We always have a first page
@@ -339,7 +338,7 @@ def makeObjectFeed(
     startLinkGS.update({"page": paginator.page_range[0]})
     startLink.set(
         "href", "%s/%s?%s" % (
-            webRoot, feedId, urllib.urlencode(startLinkGS, doseq=True)
+            webRoot, feedId, urllib.parse.urlencode(startLinkGS, doseq=True)
         )
     )
     # Potentially there is a previous page, list it's details
@@ -354,7 +353,7 @@ def makeObjectFeed(
             {"page": paginator.page(page).previous_page_number()}
         )
         prevLinkText = "%s/%s?%s" % (
-            webRoot, feedId, urllib.urlencode(prevLinkGS, doseq=True)
+            webRoot, feedId, urllib.parse.urlencode(prevLinkGS, doseq=True)
         )
         prevLink.set("href", prevLinkText)
     # Potentially there is a next page, fill in it's details
@@ -367,7 +366,7 @@ def makeObjectFeed(
             nextLinkGS = {}
         nextLinkGS.update({"page": paginator.page(page).next_page_number()})
         nextLinkText = "%s/%s?%s" % (
-            webRoot, feedId, urllib.urlencode(nextLinkGS, doseq=True)
+            webRoot, feedId, urllib.parse.urlencode(nextLinkGS, doseq=True)
         )
         nextLink.set("href", nextLinkText)
     for o in object_list:
@@ -460,7 +459,7 @@ def updateObjectFromXML(xml_doc, obj, mapping):
         if k.startswith('@'):
             continue
         selected_text = None
-        if isinstance(v, basestring):
+        if isinstance(v, str):
             selector = v
         elif isinstance(v, list):
             selector = '/'.join(v)

@@ -1,4 +1,4 @@
-from mock import Mock
+from unittest.mock import Mock
 
 from codalib import util
 
@@ -15,7 +15,7 @@ def test_return_value(monkeypatch):
     mock_urlopen = Mock(return_value=response)
 
     # Patch urlopen so that we do not make an http request.
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
 
     return_value = util.doWebRequest('http://exmple.com/foo/bar')
     assert return_value == (response, response.read())
@@ -27,7 +27,7 @@ def test_return_response_is_none(monkeypatch):
     is falsy.
     """
     mock_urlopen = Mock(return_value=None)
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
 
     return_value = util.doWebRequest('http://exmple.com/foo/bar')
     assert return_value == (None, None)
@@ -35,13 +35,13 @@ def test_return_response_is_none(monkeypatch):
 
 def test_with_head_method(monkeypatch):
     """
-    Check that the HEADREQUEST is passed to urllib2.urlopen.
+    Check that the HEADREQUEST is passed to urllib.request.urlopen.
     """
     response = Mock()
     response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
                                      method='HEAD')
 
@@ -53,13 +53,13 @@ def test_with_head_method(monkeypatch):
 
 def test_with_put_method(monkeypatch):
     """
-    Check that the PUTREQUEST is passed to urllib2.urlopen.
+    Check that the PUTREQUEST is passed to urllib.request.urlopen.
     """
     response = Mock()
     response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
                                      method='PUT')
 
@@ -71,13 +71,13 @@ def test_with_put_method(monkeypatch):
 
 def test_with_delete_method(monkeypatch):
     """
-    Check that the DELETEREQUEST is passed to urllib2.urlopen.
+    Check that the DELETEREQUEST is passed to urllib.request.urlopen.
     """
     response = Mock()
     response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
     return_value = util.doWebRequest('http://example.com/foo/bar',
                                      method='DELETE')
 
@@ -89,7 +89,7 @@ def test_with_delete_method(monkeypatch):
 
 def test_with_post_method(monkeypatch):
     """
-    Check that a urllib2.Request object with the POST method is
+    Check that a urllib.request.Request object with the POST method is
     constructed.
     """
     request, response = Mock(), Mock()
@@ -98,8 +98,8 @@ def test_with_post_method(monkeypatch):
 
     # We will mock the request object so we can make some
     # assertions about how it was called.
-    monkeypatch.setattr('urllib2.Request', request)
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.Request', request)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
 
     url = 'http://example.com/foo/bar'
     data = {'data': 'test'}
@@ -111,15 +111,15 @@ def test_with_post_method(monkeypatch):
 
 def test_with_get_method(monkeypatch):
     """
-    Check that a urllib2.Request object with the GET method is
+    Check that a urllib.request.Request object with the GET method is
     constructed.
     """
     request, response = Mock(), Mock()
     response.read.return_value = 'test content'
     mock_urlopen = Mock(return_value=response)
 
-    monkeypatch.setattr('urllib2.Request', request)
-    monkeypatch.setattr('urllib2.urlopen', mock_urlopen)
+    monkeypatch.setattr('urllib.request.Request', request)
+    monkeypatch.setattr('urllib.request.urlopen', mock_urlopen)
 
     url = 'http://example.com/foo/bar'
     return_value = util.doWebRequest(url)
