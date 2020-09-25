@@ -217,6 +217,8 @@ def nodeToXML(nodeObject):
     if nodeObject.last_checked:
         checkedNode = etree.SubElement(xmlRoot, NODE + "lastChecked")
         checkedNode.text = nodeObject.last_checked.strftime(TIME_FORMAT_STRING)
+    statusNode = etree.SubElement(xmlRoot, NODE + "status")
+    statusNode.text = nodeObject.status
     return xmlRoot
 
 
