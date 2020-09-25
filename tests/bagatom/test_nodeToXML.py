@@ -16,6 +16,7 @@ class NodeStub(object):
     node_capacity = 4096
     node_size = 2048
     last_checked = datetime(2015, 1, 1)
+    status = 'Active'
 
 
 def test_return_type():
