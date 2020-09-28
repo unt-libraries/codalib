@@ -16,7 +16,7 @@ class NodeStub(object):
     node_capacity = 4096
     node_size = 2048
     last_checked = datetime(2015, 1, 1)
-    status = 'Active'
+    status = '1'
 
 
 def test_return_type():
@@ -35,6 +35,7 @@ def test_return_type():
     ('capacity', '4096'),
     ('size', '2048'),
     ('lastChecked', '2015-01-01T00:00:00Z'),
+    ('status', 'Active'),
 ])
 def test_has_element(element, text):
     """
