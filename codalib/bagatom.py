@@ -202,6 +202,7 @@ def nodeToXML(nodeObject):
     Take a Django node object from our CODA store and make an XML
     representation
     """
+    nodeObject_status = {'0': 'Inactive', '1': 'Active'}
     xmlRoot = etree.Element(NODE + "node", nsmap=NODE_NSMAP)
     nameNode = etree.SubElement(xmlRoot, NODE + "name")
     nameNode.text = nodeObject.node_name
@@ -216,8 +217,10 @@ def nodeToXML(nodeObject):
     if nodeObject.last_checked:
         checkedNode = etree.SubElement(xmlRoot, NODE + "lastChecked")
         checkedNode.text = nodeObject.last_checked.strftime(TIME_FORMAT_STRING)
-    if nodeObject.status:
-        statusNode = etree.SubElement(xmlRoot, NODE + "status")
+    statusNode = etree.SubElement(xmlRoot, NODE + "status")
+    if hasattr(nodeObject, 'status'):
+        statusNode.text = nodeObject_status[nodeObject.status]
+    else:
         statusNode.text = 'Active'
     return xmlRoot
 
