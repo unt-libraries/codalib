@@ -3,7 +3,7 @@
 __title__ = "Coda"
 __uri__ = "http://digital2.library.unt.edu/name/nm0004311/"
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 APP_AUTHOR = {
     "name": __title__,
