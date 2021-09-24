@@ -11,7 +11,7 @@ with open('codalib/__init__.py', 'r') as fd:
 install_requires = [
     'lxml>=3.3',
     'pytz>=2016.10',
-    'tzlocal>=1.3'
+    'tzlocal>=3.0'
 ]
 
 setup(

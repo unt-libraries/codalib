@@ -10,7 +10,7 @@ from tzlocal import get_localzone
 # Get the utc offset for the datetime object used in tests in local time.
 # we have to do this so tests will work during dst and std time.
 DEFAULT_LOCAL_TZ = get_localzone()
-LOCAL_OFFSET = DEFAULT_LOCAL_TZ.localize(datetime(2017, 1, 27, 14, 43)).utcoffset()
+LOCAL_OFFSET = DEFAULT_LOCAL_TZ.utcoffset(datetime(2017, 1, 27, 14, 43))
 
 
 def test_parse_date():
@@ -47,7 +47,7 @@ def test_parse_with_nondefault_timezone():
     dt_str = "2017-01-27T15:14:00.111111+06:00"
     dt = xsDateTime_parse(dt_str, local_tz=timezone("US/Pacific"))
     equiv = datetime(2017, 1, 27, 9, 14, 0, 111111)
-    equiv += timezone("US/Pacific").localize(datetime(2017, 1, 27, 9, 14, 0, 111111)).utcoffset()
+    equiv += timezone("US/Pacific").utcoffset(datetime(2017, 1, 27, 9, 14, 0, 111111))
     assert dt == equiv
 
 
