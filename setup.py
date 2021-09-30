@@ -11,7 +11,7 @@ with open('codalib/__init__.py', 'r') as fd:
 install_requires = [
     'lxml>=3.3',
     'pytz>=2016.10',
-    'tzlocal>=1.3'
+    'tzlocal>=3.0'
 ]
 
 setup(
@@ -33,7 +33,6 @@ setup(
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ]

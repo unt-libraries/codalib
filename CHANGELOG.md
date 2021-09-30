@@ -2,6 +2,8 @@
 -----
 
 * Add support for Node `status` attribute.
+* Upgrade for `tzlocal` 3.0 dependency.
+* Drop support for now unsupported Python 3.5.
 
 2.0.0
 -----

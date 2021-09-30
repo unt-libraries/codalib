@@ -161,7 +161,7 @@ def localize_datetime(dt, local_tz=None):
     """
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
-    return local_tz.localize(dt)
+    return dt.replace(tzinfo=local_tz)
 
 
 def current_offset(local_tz=None):
@@ -172,8 +172,7 @@ def current_offset(local_tz=None):
     """
     if local_tz is None:
         local_tz = DEFAULT_LOCAL_TZ
-    dt = local_tz.localize(datetime.now())
-    return dt.utcoffset()
+    return local_tz.utcoffset(datetime.now())
 
 
 def set_default_local_tz(new_local_tz):
