@@ -1,4 +1,4 @@
-# codalib [![Build Status](https://travis-ci.org/unt-libraries/codalib.svg?branch=master)](https://travis-ci.org/unt-libraries/codalib)
+# codalib [![Build Status](https://github.com/unt-libraries/codalib/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/unt-libraries/codalib/actions)
 A helper library for [coda](https://github.com/unt-libraries/coda)
 
 ## System Requirements

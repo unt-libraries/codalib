@@ -4,6 +4,8 @@
 * Add support for Node `status` attribute.
 * Upgrade for `tzlocal` 3.0 dependency.
 * Drop support for now unsupported Python 3.5.
+* Replace Travis with GitHub Actions.
+* Add support for Python 3.8 and 3.9.
 
 2.0.0
 -----
