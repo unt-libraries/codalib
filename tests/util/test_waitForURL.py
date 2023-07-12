@@ -1,6 +1,6 @@
 from time import sleep
 from unittest.mock import MagicMock
-import urllib.request
+import http.client
 import urllib.error
 
 from codalib.util import waitForURL
@@ -12,7 +12,7 @@ def test_url_call_succeeds_with_200(monkeypatch):
     200 OK.
     """
     # Setup the mocks.
-    response = MagicMock(spec=urllib.request.addinfourl)
+    response = MagicMock(spec=http.client.HTTPResponse)
     response.getcode.return_value = 200
     mock_urlopen = MagicMock(return_value=response)
 
@@ -30,7 +30,7 @@ def test_excepts_URLError(monkeypatch):
     Check that the function can handle urllib.request.URLErrors and
     immediately retry.
     """
-    response = MagicMock(spec=urllib.request.addinfourl)
+    response = MagicMock(spec=http.client.HTTPResponse)
     response.getcode.return_value = 200
 
     side_effects = [urllib.error.URLError('Mock Exception'), response]
