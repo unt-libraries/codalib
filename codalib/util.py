@@ -1,4 +1,5 @@
 from datetime import datetime
+import http.client
 import json
 import os
 import tempfile
@@ -57,7 +58,7 @@ def waitForURL(url, max_seconds=None):
             response = urllib.request.urlopen(HEADREQUEST(url))
         except urllib.error.URLError:
             pass
-        if response is not None and isinstance(response, urllib.request.addinfourl):
+        if response is not None and isinstance(response, http.client.HTTPResponse):
             if response.getcode() == 200:
                 # We're done, yay!
                 return
@@ -65,7 +66,7 @@ def waitForURL(url, max_seconds=None):
         timePassed = timeNow - startTime
         if max_seconds and max_seconds < timePassed.seconds:
             return
-        print("Waiting on URL %s for %s so far" % (url, timePassed))
+        print("%s: Waiting on URL %s for %s so far" % (str(timeNow), url, timePassed))
         time.sleep(30)
 
 
