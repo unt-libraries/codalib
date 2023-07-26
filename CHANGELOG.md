@@ -1,6 +1,7 @@
 2.1.0
 -----
 
+* Fix looping indefinitely in util.waitForURL. [#38](https://github.com/unt-libraries/codalib/pull/38)
 * Add support for Node `status` attribute.
 * Upgrade for `tzlocal` 3.0 dependency.
 * Drop support for now unsupported Python 3.5.
